@@ -28,7 +28,8 @@ interface
 
 uses
   Classes, SysUtils, ActnList, uFileView, uFileViewNotebook, uFileSourceOperation,
-  uGlobs, uFileFunctions, uFormCommands, uFileSorting, uShellContextMenu, Menus, ufavoritetabs,ufile
+  uGlobs, uFileFunctions, uFormCommands, uFileSorting, uShellContextMenu, Menus, ufavoritetabs,ufile,
+  DCClassesUtf8, fMultiRenameWait, LazUtf8
 {$IFDEF DARWIN}
   , uMyDarwin
 {$ENDIF}
@@ -380,7 +381,7 @@ type
    procedure cm_OpenDriveByIndex(const Params: array of string);
    procedure cm_AddPlugin(const Params: array of string);
    procedure cm_LoadList(const Params: array of string);
-   
+
    procedure cm_JumpToPrevTabInStack(const Params: array of String);
    procedure cm_MaximizePanel(const Params: array of String);
    procedure cm_OpenParentFolderExternal(const Params: array of String);
@@ -388,6 +389,7 @@ type
    procedure cm_ChangeDirToPrevSibling(const Params: array of String);
    procedure cm_ToggleFreeSorting(const Params: array of String);
    procedure cm_ToggleAliasMode(const Params: array of String);
+   procedure cm_RenameFilesWithEditor(const Params: array of String);
 
    // Internal commands
    procedure cm_ExecuteToolbarItem(const Params: array of string);
@@ -5649,7 +5651,7 @@ begin
 end;
 
 procedure TMainCommands.cm_MaximizePanel(const Params: array of String);
-var 
+var
     activeColumnsView: TColumnsFileView;
     ColumnsClass: TPanelColumnsClass;
     colWidthParam: String;
@@ -5669,11 +5671,11 @@ begin
   end
   else
   begin
-    notActivePanel := frmMain.pnlRight;  
+    notActivePanel := frmMain.pnlRight;
     notActiveDiskPanel := frmMain.pnlDskRight;
     splitPos := 100;
   end;
-  
+
   if notActivePanel.IsVisible then
   begin
     notActivePanel.Hide;
@@ -5691,7 +5693,7 @@ begin
 end;
 
 procedure TMainCommands.cm_ChangeDirToPrevSibling(const Params: array of String);
-var 
+var
     PrevSiblingPath, curFileName, sUpLevel, PreviousSubDirectory: String;
     I: Integer;
     parentFiles, parentDirectories: TFiles;
@@ -5701,21 +5703,21 @@ begin
   with frmMain.ActiveFrame do
   begin
     sUpLevel:= FileSource.GetParentDir(CurrentPath);
-    
+
     if sUpLevel <> EmptyStr then
     begin
       PreviousSubDirectory := ExtractFileName(ExcludeTrailingPathDelimiter(CurrentPath));
-      
+
       SetLength(aSortings, 1);
       SetLength(aSortings[0].SortFunctions, 1);
       aSortings[0].SortFunctions[0] := fsfName;
       aSortings[0].SortDirection := sdAscending;
-      
+
       parentFiles := FileSource.GetFiles(sUpLevel);
       TFileSorter.Sort(parentFiles, aSortings);
-      
+
       parentDirectories := TFiles.Create(parentFiles.Path);
-      
+
       for I := 0 to parentFiles.Count-1 do
       begin
         curFile := parentFiles.Items[I];
@@ -5724,12 +5726,12 @@ begin
           parentDirectories.Add(curFile);
         end;
       end;
-      
+
       for I := 0 to parentDirectories.Count-1 do
       begin
         curFile := parentDirectories.Items[I];
         curFileName := curFile.Name;
-        
+
         if curFileName = PreviousSubDirectory then
         begin
           if I <> 0 then
@@ -5739,14 +5741,14 @@ begin
           end;
         end;
       end;
-      
+
       CurrentPath := PrevSiblingPath;
     end;
   end;
 end;
 
 procedure TMainCommands.cm_ChangeDirToNextSibling(const Params: array of String);
-var 
+var
     NextSiblingPath, curFileName, sUpLevel, PreviousSubDirectory: String;
     I: Integer;
     parentFiles, parentDirectories: TFiles;
@@ -5756,21 +5758,21 @@ begin
   with frmMain.ActiveFrame do
   begin
     sUpLevel:= FileSource.GetParentDir(CurrentPath);
-    
+
     if sUpLevel <> EmptyStr then
     begin
       PreviousSubDirectory := ExtractFileName(ExcludeTrailingPathDelimiter(CurrentPath));
-      
+
       SetLength(aSortings, 1);
       SetLength(aSortings[0].SortFunctions, 1);
       aSortings[0].SortFunctions[0] := fsfName;
       aSortings[0].SortDirection := sdAscending;
-      
+
       parentFiles := FileSource.GetFiles(sUpLevel);
       TFileSorter.Sort(parentFiles, aSortings);
-      
+
       parentDirectories := TFiles.Create(parentFiles.Path);
-      
+
       for I := 0 to parentFiles.Count-1 do
       begin
         curFile := parentFiles.Items[I];
@@ -5779,12 +5781,12 @@ begin
           parentDirectories.Add(curFile);
         end;
       end;
-      
+
       for I := 0 to parentDirectories.Count-1 do
       begin
         curFile := parentDirectories.Items[I];
         curFileName := curFile.Name;
-        
+
         if curFileName = PreviousSubDirectory then
         begin
           if I <> parentDirectories.Count-1 then
@@ -5794,10 +5796,10 @@ begin
           end;
         end;
       end;
-      
+
       CurrentPath := NextSiblingPath;
     end;
-    
+
   end;
 end;
 
@@ -5841,6 +5843,115 @@ procedure TMainCommands.cm_ToggleAliasMode(const Params: array of String);
 begin
   gUseAliasCommands := not gUseAliasCommands;
   frmMain.actToggleAliasMode.Checked := uGlobs.gUseAliasCommands;
+end;
+
+procedure TMainCommands.cm_RenameFilesWithEditor(const Params: array of String);
+var
+  I, J: Integer;
+  MarkIndex: Integer;
+  AFileName: String;
+  FileNameSource: String;
+  FileNameResult: String;
+  AFileList: TStringListEx;
+  AFileListResult: TStringListEx;
+  FFiles, AllFiles: TFiles;
+  DisplayFiles: TDisplayFiles;
+
+  FLog: TStringListEx;
+  LogFileStream: TFileStream;
+  S: String;
+  LogFileName: String;
+  RenameResult: Boolean;
+  DummyForm: TfrmStatistics;
+begin
+  AFileList := TStringListEx.Create;
+  AFileName := GetTempFolderDeletableAtTheEnd;
+  AFileName := GetTempName(AFileName) + '.txt';
+
+  FFiles := frmMain.ActiveFrame.CloneSelectedOrActiveFiles;
+  for I:= 0 to FFiles.Count - 1 do
+    AFileList.Add(FFiles[I].Name);
+
+  // Used as parent to prevent blocking of the main form
+  DummyForm := TfrmStatistics.Create(Self);
+  try
+    AFileList.SaveToFile(AFileName);
+
+    if ShowMultiRenameWaitForm(AFileName, DummyForm) then
+    begin
+      LogFileName := gMulRenLogFilename;
+
+      FLog := TStringListEx.Create;
+      FLog.Add('>>> [' + DateTimeToStr(Now) + ']');
+
+      AFileListResult:= TStringListEx.Create;
+      AFileListResult.LoadFromFile(AFileName);
+
+      if AFileListResult.Count <> FFiles.Count then
+      begin
+        msgError(Format(rsMulRenWrongLinesNumber, [AFileListResult.Count, FFiles.Count]));
+      end
+      else
+      begin
+        for I:= 0 to AFileListResult.Count - 1 do
+        begin
+          FileNameSource := FFiles[I].FullPath;
+          FileNameResult := ExtractFilePath(FileNameSource) + AFileListResult[I];
+          S := FileNameSource + ' -> ' + FileNameResult;
+
+          // Rename if result file doesn't exist or the case is changed
+          if not mbFileExists(FileNameResult)
+             or (FileNameSource <> FileNameResult) and (UTF8LowerCase(FileNameSource) = UTF8LowerCase(FileNameResult))
+          then begin
+            RenameResult := mbRenameFile(FileNameSource, FileNameResult);
+
+            if RenameResult then
+              S := 'OK      ' + S
+            else
+              S := 'ERROR   ' + S;
+          end
+          else if FileNameSource <> FileNameResult then
+            S := 'EXISTS  ' + S
+          else
+            S := 'SKIP    ' + S;
+
+          FLog.Add(S);
+        end;
+        FLog.Add('');
+      end;
+
+      frmMain.ActiveFrame.MarkFiles(False);
+
+      AFileListResult.Free;
+
+      try
+        if FileExists(mbExpandFileName(LogFileName)) then
+        begin
+          LogFileStream := TFileStream.Create(mbExpandFileName(LogFileName), fmOpenWrite);
+          try
+            LogFileStream.Seek(0, soEnd);
+            FLog.SaveToStream(LogFileStream);
+          finally
+            LogFileStream.Free;
+          end;
+        end
+        else
+        begin
+          FLog.SaveToFile(mbExpandFileName(LogFileName));
+        end;
+      except
+        on E: Exception do
+          msgError(E.Message);
+      end;
+      FLog.Free;
+
+    end;
+  except
+    on E: Exception do msgError(E.Message);
+  end;
+
+  DummyForm.Free;
+  AFileList.Free;
 end;
 
 end.

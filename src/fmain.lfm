@@ -2860,6 +2860,12 @@ object frmMain: TfrmMain
       Caption = 'Toggle Alias Mode'
       OnExecute = actExecute
     end
+    object actRenameFilesWithEditor: TAction
+      Tag = 4
+      Category = 'File Operations'
+      Caption = 'Edit File Names'
+      OnExecute = actExecute
+    end
     object actConfigArchivers: TAction
       Tag = 5
       Category = 'Configuration'

@@ -1186,6 +1186,7 @@ begin
       AddIfNotExists(['Ctrl+Shift+B'],[],'cm_OpenParentFolderExternal');
       AddIfNotExists(['Ctrl+Up'],[],'cm_ChangeDirToPrevSibling');
       AddIfNotExists(['Ctrl+Down'],[],'cm_ChangeDirToNextSibling');
+      AddIfNotExists(['Ctrl+Shift+R'],[],'cm_RenameFilesWithEditor');
 
       if HotMan.Version < 38 then
       begin

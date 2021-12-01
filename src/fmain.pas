@@ -940,7 +940,8 @@ type
     }
     procedure DoDragDropOperation(Operation: TDragDropOperation;
                                   var DropParams: TDropParams);
-
+    
+    procedure DriveButtonPaint(Sender: TObject);
 
     property Drives: TDrivesList read DrivesList;
     property SyncChangeDir: String write FSyncChangeDir;
@@ -5114,6 +5115,7 @@ begin
       Button.Transparent := True;
       {/Set Buttons Transparent}
       Button.Layout := blGlyphLeft;
+      Button.OnPaint := @DriveButtonPaint;
     end; // for
 
     // Add special buttons
@@ -5122,6 +5124,14 @@ begin
 
   finally
     dskPanel.EndUpdate;
+  end;
+  
+  if Count > 8 then Count := 8;
+  for i := 0 to Count do
+  begin
+    Button := dskPanel.Buttons[i];
+    Button.Width := 50;
+    Button.Margin := 15;
   end;
 end;
 
@@ -6761,6 +6771,8 @@ procedure TfrmMain.ShowDrivesList(APanel: TFilePanelSelect);
 var
   p: TPoint;
   ADriveIndex: Integer;
+  CurrentPath: String;
+  CurrentDrive: String;
 begin
   if tb_activate_panel_on_click in gDirTabOptions then
     SetActiveFrame(APanel);
@@ -6779,6 +6791,10 @@ begin
         ADriveIndex := btnRightDrive.Tag;
       end;
   end;
+  
+  CurrentPath := ActiveNotebook.ActiveView.CurrentPath;
+  CurrentDrive := ExtractFileDrive(CurrentPath);
+  
   p := ScreenToClient(p);
   FDrivesListPopup.Show(p, APanel, ADriveIndex);
 end;
@@ -7381,6 +7397,29 @@ begin
   end;
 end;
 {$ENDIF}
+
+procedure TfrmMain.DriveButtonPaint(Sender: TObject);
+var
+  button: TKASToolButton;
+  bCanvas: TCanvas;
+  id: PtrInt;
+begin
+  button := Sender as TKASToolButton;
+  bCanvas := button.Canvas;
+
+  id := button.Tag + 1;
+
+  if id <= 9 then
+  begin
+    bCanvas.Brush.Style := bsClear;
+    bCanvas.Font.Size := 8;
+    bCanvas.Font.Bold := True;
+    bCanvas.TextOut(4, 2, IntToStr(id));
+
+    bCanvas.Font.Size := 0;
+    bCanvas.Font.Bold := False;
+  end;
+end;
 
 initialization
   {$I DragCursors.lrs}

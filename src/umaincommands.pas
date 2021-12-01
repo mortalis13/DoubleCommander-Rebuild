@@ -408,7 +408,7 @@ uses fOptionsPluginsBase, fOptionsPluginsDSX, fOptionsPluginsWCX,
      uHotDir, DCXmlConfig, dmCommonData, fOptionsFrame, foptionsDirectoryHotlist,
      fMainCommandsDlg, uConnectionManager, fOptionsFavoriteTabs, fTreeViewMenu,
      uArchiveFileSource, fOptionsHotKeys, fBenchmark, uAdministrator, uWcxArchiveFileSource,
-     uColumnsFileView
+     uColumnsFileView, fStatistics
      ;
 
 resourcestring
@@ -558,6 +558,8 @@ procedure TMainCommands.OnCalcStatisticsStateChanged(Operation: TFileSourceOpera
 var
   CalcStatisticsOperation: TFileSourceCalcStatisticsOperation;
   CalcStatisticsOperationStatistics: TFileSourceCalcStatisticsOperationStatistics;
+  StatText: String;
+  frmStatistics: TfrmStatistics;
 begin
   if (State = fsosStopped) and (Operation.Result = fsorFinished) then
   begin
@@ -568,7 +570,10 @@ begin
       if Size < 0 then
         msgOK(Format(rsSpaceMsg, [Files, Directories, '???', '???']))
       else begin
-        msgOK(Format(rsSpaceMsg, [Files, Directories, cnvFormatFileSize(Size), IntToStrTS(Size)]));
+        StatText := Format(rsSpaceMsg, [Files, Directories, cnvFormatFileSize(Size), Numb2USA(IntToStr(Size))]);
+        frmStatistics := TfrmStatistics.Create(Self);
+        frmStatistics.lblStatistics.Caption := StatText;
+        frmStatistics.ShowForm;
       end;
     end;
   end;
@@ -2520,7 +2525,7 @@ var
   i: Integer;
 begin
   sPathList := TStringList.Create;
-  
+
   with frmMain do
   try
     if not (fsoCreateDirectory in ActiveFrame.FileSource.GetOperationsTypes) then
@@ -2567,7 +2572,7 @@ begin
       end;
       Exit;
     end;
-    
+
     for i:=0 to sPathList.Count-1 do
     begin
       sPath := sPathList[i];

@@ -567,6 +567,13 @@ type
     miSetAllTabsOptionDirsInNewTab: TMenuItem;
     miOpenDirInNewTab: TMenuItem;
     actResaveFavoriteTabs: TAction;
+    
+    actToggleFreeSorting: TAction;
+    actToggleAliasMode: TAction;
+    
+    mnuToggleAliasMode: TMenuItem;
+    mnuFilesToggleFreeSorting: TMenuItem;
+    
     procedure actExecute(Sender: TObject);
     procedure btnF3MouseWheelDown(Sender: TObject; Shift: TShiftState;
       {%H-}MousePos: TPoint; var {%H-}Handled: Boolean);
@@ -687,8 +694,7 @@ type
     procedure FileViewAfterChangePath(FileView: TFileView);
     procedure FileViewActivate(FileView: TFileView);
     procedure FileViewFilesChanged(FileView: TFileView);
-    procedure edtCommandKeyDown(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
+    procedure edtCommandKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure edtCommandExit(Sender: TObject);
     procedure tbChangeDirClick(Sender: TObject);
     procedure tbCopyClick(Sender: TObject);
@@ -1190,6 +1196,8 @@ begin
   // Initialize actions.
   actShowSysFiles.Checked := uGlobs.gShowSystemFiles;
   actHorizontalFilePanels.Checked := gHorizontalFilePanels;
+  actToggleFreeSorting.Checked := uGlobs.gFreeSorting;
+  actToggleAliasMode.Checked := uGlobs.gUseAliasCommands;
 
   MainToolBar.AddToolItemExecutor(TKASCommandItem, @ToolbarExecuteCommand);
   MainToolBar.AddToolItemExecutor(TKASProgramItem, @ToolbarExecuteProgram);
@@ -5781,8 +5789,12 @@ begin
   end;
 end;
 
-procedure TfrmMain.edtCommandKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TfrmMain.edtCommandKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+    commandText, sFileName, aliasItem: String;
+    aliasKey, aliasValue: String;
+    aliasList: TStringListEx;
+    I, separatorPos: Integer;
 begin
   if not edtCommand.DroppedDown and ((Key=VK_UP) or (Key=VK_DOWN)) then
     begin
@@ -5809,6 +5821,35 @@ begin
         begin
           if (Shift * [ssCtrl, ssAlt, ssMeta, ssAltGr] = []) then
           begin
+            if gUseAliasCommands then
+            begin
+              commandText := edtCommand.Text;
+              aliasList := TStringListEx.Create;
+              try
+                sFileName := gpCfgDir + 'aliases.txt';
+                dcdebug(sFileName);
+                aliasList.LoadFromFile(sFileName);
+                
+                for I:= 0 to aliasList.Count - 1 do
+                begin
+                  aliasItem := aliasList.Strings[I];
+                  separatorPos := Pos(' ', aliasItem);
+                  aliasKey := Copy(aliasItem, 1, separatorPos-1);
+                  aliasValue := Copy(aliasItem, separatorPos+1, length(aliasItem)-separatorPos);
+                  
+                  if commandText = aliasKey then
+                  begin
+                    commandText := aliasValue;
+                    break;
+                  end;
+                end;
+              except
+                dcdebug('Error reading aliases file');
+              end;
+              aliasList.Free;
+              edtCommand.Text := commandText;
+            end;
+            
             ExecuteCommandLine(ssShift in Shift);
             Key := 0;
           end;

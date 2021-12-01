@@ -380,6 +380,9 @@ type
    procedure cm_OpenDriveByIndex(const Params: array of string);
    procedure cm_AddPlugin(const Params: array of string);
    procedure cm_LoadList(const Params: array of string);
+   
+   procedure cm_ToggleFreeSorting(const Params: array of String);
+   procedure cm_ToggleAliasMode(const Params: array of String);
 
    // Internal commands
    procedure cm_ExecuteToolbarItem(const Params: array of string);
@@ -5640,5 +5643,16 @@ begin
   end;
 end;
 
-end.
+procedure TMainCommands.cm_ToggleFreeSorting(const Params: array of String);
+begin
+  uGlobs.gFreeSorting := not uGlobs.gFreeSorting;
+  frmMain.actToggleFreeSorting.Checked := uGlobs.gFreeSorting;
+end;
 
+procedure TMainCommands.cm_ToggleAliasMode(const Params: array of String);
+begin
+  gUseAliasCommands := not gUseAliasCommands;
+  frmMain.actToggleAliasMode.Checked := uGlobs.gUseAliasCommands;
+end;
+
+end.

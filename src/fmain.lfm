@@ -2840,6 +2840,20 @@ object frmMain: TfrmMain
       Hint = 'Open Parent folder using system associations'
       OnExecute = actExecute
     end
+    object actChangeDirToNextSibling: TAction
+      Tag = 14
+      Category = 'Navigation'
+      Caption = 'Change Dir to Next Sibling'
+      Hint = 'Change Dir to Next Sibling'
+      OnExecute = actExecute
+    end
+    object actChangeDirToPrevSibling: TAction
+      Tag = 14
+      Category = 'Navigation'
+      Caption = 'Change Dir to Previous Sibling'
+      Hint = 'Change Dir to Previous Sibling'
+      OnExecute = actExecute
+    end
     object actToggleAliasMode: TAction
       Tag = 14
       Category = 'Navigation'

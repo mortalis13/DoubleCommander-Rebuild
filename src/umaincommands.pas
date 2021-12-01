@@ -384,6 +384,8 @@ type
    procedure cm_JumpToPrevTabInStack(const Params: array of String);
    procedure cm_MaximizePanel(const Params: array of String);
    procedure cm_OpenParentFolderExternal(const Params: array of String);
+   procedure cm_ChangeDirToNextSibling(const Params: array of String);
+   procedure cm_ChangeDirToPrevSibling(const Params: array of String);
    procedure cm_ToggleFreeSorting(const Params: array of String);
    procedure cm_ToggleAliasMode(const Params: array of String);
 
@@ -5685,6 +5687,117 @@ begin
     notActivePanel.Show;
     notActiveDiskPanel.Show;
     frmMain.MainSplitter.Show;
+  end;
+end;
+
+procedure TMainCommands.cm_ChangeDirToPrevSibling(const Params: array of String);
+var 
+    PrevSiblingPath, curFileName, sUpLevel, PreviousSubDirectory: String;
+    I: Integer;
+    parentFiles, parentDirectories: TFiles;
+    aSortings: TFileSortings;
+    curFile, prevFile: TFile;
+begin
+  with frmMain.ActiveFrame do
+  begin
+    sUpLevel:= FileSource.GetParentDir(CurrentPath);
+    
+    if sUpLevel <> EmptyStr then
+    begin
+      PreviousSubDirectory := ExtractFileName(ExcludeTrailingPathDelimiter(CurrentPath));
+      
+      SetLength(aSortings, 1);
+      SetLength(aSortings[0].SortFunctions, 1);
+      aSortings[0].SortFunctions[0] := fsfName;
+      aSortings[0].SortDirection := sdAscending;
+      
+      parentFiles := FileSource.GetFiles(sUpLevel);
+      TFileSorter.Sort(parentFiles, aSortings);
+      
+      parentDirectories := TFiles.Create(parentFiles.Path);
+      
+      for I := 0 to parentFiles.Count-1 do
+      begin
+        curFile := parentFiles.Items[I];
+        if (curFile.IsDirectory) and (not curFile.IsLink) then
+        begin
+          parentDirectories.Add(curFile);
+        end;
+      end;
+      
+      for I := 0 to parentDirectories.Count-1 do
+      begin
+        curFile := parentDirectories.Items[I];
+        curFileName := curFile.Name;
+        
+        if curFileName = PreviousSubDirectory then
+        begin
+          if I <> 0 then
+          begin
+            prevFile := parentDirectories.Items[I-1];
+            PrevSiblingPath := prevFile.FullPath;
+          end;
+        end;
+      end;
+      
+      CurrentPath := PrevSiblingPath;
+    end;
+  end;
+end;
+
+procedure TMainCommands.cm_ChangeDirToNextSibling(const Params: array of String);
+var 
+    NextSiblingPath, curFileName, sUpLevel, PreviousSubDirectory: String;
+    I: Integer;
+    parentFiles, parentDirectories: TFiles;
+    aSortings: TFileSortings;
+    curFile, nextFile: TFile;
+begin
+  with frmMain.ActiveFrame do
+  begin
+    sUpLevel:= FileSource.GetParentDir(CurrentPath);
+    
+    if sUpLevel <> EmptyStr then
+    begin
+      PreviousSubDirectory := ExtractFileName(ExcludeTrailingPathDelimiter(CurrentPath));
+      
+      SetLength(aSortings, 1);
+      SetLength(aSortings[0].SortFunctions, 1);
+      aSortings[0].SortFunctions[0] := fsfName;
+      aSortings[0].SortDirection := sdAscending;
+      
+      parentFiles := FileSource.GetFiles(sUpLevel);
+      TFileSorter.Sort(parentFiles, aSortings);
+      
+      parentDirectories := TFiles.Create(parentFiles.Path);
+      
+      for I := 0 to parentFiles.Count-1 do
+      begin
+        curFile := parentFiles.Items[I];
+        if (curFile.IsDirectory) and (not curFile.IsLink) then
+        begin
+          parentDirectories.Add(curFile);
+        end;
+      end;
+      
+      for I := 0 to parentDirectories.Count-1 do
+      begin
+        curFile := parentDirectories.Items[I];
+        curFileName := curFile.Name;
+        
+        if curFileName = PreviousSubDirectory then
+        begin
+          if I <> parentDirectories.Count-1 then
+          begin
+            nextFile := parentDirectories.Items[I+1];
+            NextSiblingPath := nextFile.FullPath;
+          end;
+        end;
+      end;
+      
+      CurrentPath := NextSiblingPath;
+    end;
+    
   end;
 end;
 

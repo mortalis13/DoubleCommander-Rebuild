@@ -1098,8 +1098,7 @@ begin
         end;
       end;
 
-      AddIfNotExists(['Alt+F8','','',
-                      'Ctrl+Down','',''], 'cm_ShowCmdLineHistory');
+      AddIfNotExists(['Alt+F8'],[],'cm_ShowCmdLineHistory');
       AddIfNotExists(['Ctrl+B'],[],'cm_FlatView');
       AddIfNotExists(['Ctrl+D'],[],'cm_DirHotList');
       AddIfNotExists(['Ctrl+F'],[],'cm_QuickFilter');
@@ -1136,7 +1135,6 @@ begin
       AddIfNotExists(['Ctrl+Shift+F7'],[],'cm_AddNewSearch');
       AddIfNotExists(['Ctrl+Shift+F8'],[],'cm_TreeView');
       AddIfNotExists(['Ctrl+PgDn'],[],'cm_NextTab');
-      AddIfNotExists(['Ctrl+Up'],[],'cm_OpenDirInNewTab');
       AddIfNotExists(['Ctrl+\'],[],'cm_ChangeDirToRoot');
       AddIfNotExists(['Ctrl+.'],[],'cm_ShowSysFiles');
       AddIfNotExists(['Shift+F2'],[],'cm_FocusCmdLine');
@@ -1186,6 +1184,8 @@ begin
       AddIfNotExists(['Ctrl+Tab'],[],'cm_JumpToPrevTabInStack');
       AddIfNotExists(['F11'],[],'cm_MaximizePanel');
       AddIfNotExists(['Ctrl+Shift+B'],[],'cm_OpenParentFolderExternal');
+      AddIfNotExists(['Ctrl+Up'],[],'cm_ChangeDirToPrevSibling');
+      AddIfNotExists(['Ctrl+Down'],[],'cm_ChangeDirToNextSibling');
 
       if HotMan.Version < 38 then
       begin

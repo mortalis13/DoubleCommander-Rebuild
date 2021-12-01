@@ -572,6 +572,8 @@ type
     actJumpToPrevTabInStack: TAction;
     actMaximizePanel: TAction;
     actOpenParentFolderExternal: TAction;
+    actChangeDirToNextSibling: TAction;
+    actChangeDirToPrevSibling: TAction;
     actToggleAliasMode: TAction;
     
     mnuToggleAliasMode: TMenuItem;

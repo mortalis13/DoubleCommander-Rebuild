@@ -1074,7 +1074,7 @@ begin
       AddIfNotExists(['F5'],[],'cm_Copy');
       AddIfNotExists(['F6'],[],'cm_Rename');
       AddIfNotExists(['F7'],[],'cm_MakeDir');
-      AddIfNotExists(['F8','','',
+      AddIfNotExists(['F8','','SkipErrors','',
                       'Shift+F8','','trashcan=reversesetting',''], 'cm_Delete');
       AddIfNotExists(['F9'],[],'cm_RunTerm');
 
@@ -1924,7 +1924,7 @@ begin
   gProcessComments := False;
   gRenameSelOnlyName := False;
   gShowCopyTabSelectPanel := False;
-  gUseTrash := True;
+  gUseTrash := False;
   gSkipFileOpError := False;
   gDefaultDropEffect:= True;
   gShowDialogOnDragDrop := True;

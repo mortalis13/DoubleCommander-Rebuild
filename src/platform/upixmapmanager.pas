@@ -84,7 +84,7 @@ type
   { TPixMapManager }
 
   TPixMapManager = class
-  
+
   private
     {en
        Maps file extension to index of bitmap (in FPixmapList) for this file extension.
@@ -1825,12 +1825,6 @@ begin
   FiDirLinkBrokenIconID:= AddSpecial(FiDirIconID, FiEmblemUnreadableID);
   FiLinkBrokenIconID:= AddSpecial(FiDefaultIconID, FiEmblemUnreadableID);
   FiUpDirIconID:= CheckAddThemePixmap('go-up');
-  {$IF DEFINED(MSWINDOWS) OR DEFINED(XDG)}
-  FiArcIconID := -1;
-  if (gShowIcons > sim_standart) and (not (cimArchive in gCustomIcons)) then
-    FiArcIconID := GetSystemArchiveIcon;
-  if FiArcIconID = -1 then
-  {$ENDIF}
   FiArcIconID := AddDefaultThemePixmap('package-x-generic');
   {$IF DEFINED(MSWINDOWS) OR DEFINED(DARWIN)}
   FiExeIconID := -1;
@@ -1911,7 +1905,7 @@ begin
   {$IF DEFINED(DARWIN)}
   if gShowIcons <> sim_all_and_exe then begin
   {$ENDIF}
-  
+
     for I:=0 to gWCXPlugins.Count - 1 do
       begin
         if gWCXPlugins.Enabled[I] and ((gWCXPlugins.Flags[I] and PK_CAPS_HIDE) <> PK_CAPS_HIDE) then

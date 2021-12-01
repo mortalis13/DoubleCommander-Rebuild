@@ -1071,7 +1071,9 @@ begin
       AddIfNotExists(['F3','','',
                       'Shift+F3','','cursor=1',''], 'cm_View');
       AddIfNotExists(['F4'],[],'cm_Edit');
-      AddIfNotExists(['F5'],[],'cm_Copy');
+      AddIfNotExists(['F5','','queueid=1','',
+                      'Ctrl+F5','','CopyTopFoldersOnly','',
+                      'Ctrl+Shift+F5','','CopyFoldersOnly',''],'cm_Copy');
       AddIfNotExists(['F6'],[],'cm_Rename');
       AddIfNotExists(['F7'],[],'cm_MakeDir');
       AddIfNotExists(['F8','','SkipErrors','',
@@ -1118,7 +1120,6 @@ begin
       AddIfNotExists(['Ctrl+F2'],[],'cm_ColumnsView');
       AddIfNotExists(['Ctrl+F3'],[],'cm_SortByName');
       AddIfNotExists(['Ctrl+F4'],[],'cm_SortByExt');
-      AddIfNotExists(['Ctrl+F5'],[],'cm_SortByDate');
       AddIfNotExists(['Ctrl+F6'],[],'cm_SortBySize');
       AddIfNotExists(['Ctrl+Enter'],[],'cm_AddFilenameToCmdLine');
       AddIfNotExists(['Ctrl+PgDn'],[],'cm_OpenArchive');

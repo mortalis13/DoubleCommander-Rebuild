@@ -158,7 +158,10 @@ begin
     TreeBuilder.SymLinkOption  := Self.SymLinkOption;
     TreeBuilder.SearchTemplate := Self.SearchTemplate;
     TreeBuilder.ExcludeEmptyTemplateDirectories := Self.ExcludeEmptyTemplateDirectories;
-
+    
+    if TopFoldersOnly then
+      TreeBuilder.Recursive := False;
+    
     TreeBuilder.BuildFromFiles(SourceFiles);
     FSourceFilesTree := TreeBuilder.ReleaseTree;
     FStatistics.TotalFiles := TreeBuilder.FilesCount;
@@ -196,6 +199,8 @@ begin
   FOperationHelper.FileExistsOption := FileExistsOption;
   FOperationHelper.DirExistsOption := DirExistsOption;
   FOperationHelper.SetPropertyError := SetPropertyError;
+  FOperationHelper.ProcessFoldersOnly := FoldersOnly;
+  FOperationHelper.ProcessTopFoldersOnly := TopFoldersOnly;
 
   FOperationHelper.Initialize;
 end;

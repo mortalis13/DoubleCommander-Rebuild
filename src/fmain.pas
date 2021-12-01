@@ -26,7 +26,7 @@
    Copyright : Peter Cernoch 2002
    Contact   : pcernoch@volny.cz
    Licence   : GNU GPL v 2.0
-   
+
    contributors:
 
    Copyright (C) 2008 Vitaly Zotov (vitalyzotov@mail.ru)
@@ -567,7 +567,7 @@ type
     miSetAllTabsOptionDirsInNewTab: TMenuItem;
     miOpenDirInNewTab: TMenuItem;
     actResaveFavoriteTabs: TAction;
-    
+
     actToggleFreeSorting: TAction;
     actJumpToPrevTabInStack: TAction;
     actMaximizePanel: TAction;
@@ -579,7 +579,7 @@ type
 
     mnuToggleAliasMode: TMenuItem;
     mnuFilesToggleFreeSorting: TMenuItem;
-    
+
     procedure actExecute(Sender: TObject);
     procedure btnF3MouseWheelDown(Sender: TObject; Shift: TShiftState;
       {%H-}MousePos: TPoint; var {%H-}Handled: Boolean);
@@ -642,7 +642,7 @@ type
     procedure MainSplitterMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
     procedure MainSplitterMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);   
+      Shift: TShiftState; X, Y: Integer);
     procedure MainTrayIconClick(Sender: TObject);
     procedure lblDriveInfoDblClick(Sender: TObject);
     procedure MainToolBarDragDrop(Sender, Source: TObject; X, Y: Integer);
@@ -856,7 +856,8 @@ type
     function CopyFiles(SourceFileSource, TargetFileSource: IFileSource;
                        var SourceFiles: TFiles; TargetPath: String;
                        bShowDialog: Boolean;
-                       QueueIdentifier: TOperationsManagerQueueIdentifier = FreeOperationsQueueId): Boolean; overload;
+                       QueueIdentifier: TOperationsManagerQueueIdentifier = FreeOperationsQueueId;
+                       FoldersOnly: Boolean = False; TopFoldersOnly: Boolean = False): Boolean; overload;
     {en
        Returns @true if move operation has been successfully started.
     }
@@ -865,7 +866,8 @@ type
                        bShowDialog: Boolean;
                        QueueIdentifier: TOperationsManagerQueueIdentifier = FreeOperationsQueueId): Boolean; overload;
     function CopyFiles(sDestPath: String; bShowDialog: Boolean;
-                       QueueIdentifier: TOperationsManagerQueueIdentifier = FreeOperationsQueueId): Boolean; overload; //  this is for F5 and Shift+F5
+                       QueueIdentifier: TOperationsManagerQueueIdentifier = FreeOperationsQueueId;
+                       FoldersOnly: Boolean = False; TopFoldersOnly: Boolean = False): Boolean; overload; //  this is for F5 and Shift+F5
     function MoveFiles(sDestPath: String; bShowDialog: Boolean;
                        QueueIdentifier: TOperationsManagerQueueIdentifier = FreeOperationsQueueId): Boolean; overload;
     procedure GetDestinationPathAndMask(SourceFiles: TFiles;
@@ -940,7 +942,7 @@ type
     }
     procedure DoDragDropOperation(Operation: TDragDropOperation;
                                   var DropParams: TDropParams);
-    
+
     procedure DriveButtonPaint(Sender: TObject);
 
     property Drives: TDrivesList read DrivesList;
@@ -3661,7 +3663,8 @@ end;
 function TfrmMain.CopyFiles(SourceFileSource, TargetFileSource: IFileSource;
                             var SourceFiles: TFiles; TargetPath: String;
                             bShowDialog: Boolean;
-                            QueueIdentifier: TOperationsManagerQueueIdentifier): Boolean;
+                            QueueIdentifier: TOperationsManagerQueueIdentifier;
+                            FoldersOnly, TopFoldersOnly: Boolean): Boolean;
 var
   BaseDir: String;
   sDstMaskTemp: String;
@@ -3821,6 +3824,8 @@ begin
     begin
       // Set operation options based on settings in dialog.
       Operation.RenameMask := sDstMaskTemp;
+      Operation.FoldersOnly := FoldersOnly;
+      Operation.TopFoldersOnly := TopFoldersOnly;
 
       if Assigned(CopyDialog) then
         CopyDialog.SetOperationOptions(Operation);
@@ -3986,7 +3991,8 @@ begin
 end;
 
 function TfrmMain.CopyFiles(sDestPath: String; bShowDialog: Boolean;
-                            QueueIdentifier: TOperationsManagerQueueIdentifier = FreeOperationsQueueId): Boolean;
+                            QueueIdentifier: TOperationsManagerQueueIdentifier;
+                            FoldersOnly, TopFoldersOnly: Boolean): Boolean;
 var
   FileSource: IFileSource;
   SourceFiles: TFiles = nil;
@@ -4001,7 +4007,8 @@ begin
     end;
     try
       Result := CopyFiles(ActiveFrame.FileSource, FileSource,
-                          SourceFiles, sDestPath, bShowDialog, QueueIdentifier);
+                          SourceFiles, sDestPath, bShowDialog, QueueIdentifier,
+                          FoldersOnly, TopFoldersOnly);
       if Result then
         ActiveFrame.MarkFiles(False);
 
@@ -5125,7 +5132,7 @@ begin
   finally
     dskPanel.EndUpdate;
   end;
-  
+
   if Count > 8 then Count := 8;
   for i := 0 to Count do
   begin
@@ -5855,14 +5862,14 @@ begin
                 sFileName := gpCfgDir + 'aliases.txt';
                 dcdebug(sFileName);
                 aliasList.LoadFromFile(sFileName);
-                
+
                 for I:= 0 to aliasList.Count - 1 do
                 begin
                   aliasItem := aliasList.Strings[I];
                   separatorPos := Pos(' ', aliasItem);
                   aliasKey := Copy(aliasItem, 1, separatorPos-1);
                   aliasValue := Copy(aliasItem, separatorPos+1, length(aliasItem)-separatorPos);
-                  
+
                   if commandText = aliasKey then
                   begin
                     commandText := aliasValue;
@@ -5875,7 +5882,7 @@ begin
               aliasList.Free;
               edtCommand.Text := commandText;
             end;
-            
+
             ExecuteCommandLine(ssShift in Shift);
             Key := 0;
           end;
@@ -6791,10 +6798,10 @@ begin
         ADriveIndex := btnRightDrive.Tag;
       end;
   end;
-  
+
   CurrentPath := ActiveNotebook.ActiveView.CurrentPath;
   CurrentDrive := ExtractFileDrive(CurrentPath);
-  
+
   p := ScreenToClient(p);
   FDrivesListPopup.Show(p, APanel, ADriveIndex);
 end;

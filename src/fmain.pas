@@ -1094,30 +1094,14 @@ procedure TfrmMain.FormCreate(Sender: TObject);
     Result.OnDragOver:= @NotebookDragOver;
     Result.OnDragDrop:= @NotebookDragDrop;
   end;
-
-  function GenerateTitle(): String;
-  var
-    R: Integer;
-    ARevision, AServerName: String;
+  function GenerateTitle():String;
+  var 
+    ServernameString: String;
   begin
+    ServernameString := '';
     if Length(UniqueInstance.ServernameByUser) > 0 then
-      AServerName := ' [' + UniqueInstance.ServernameByUser + ']'
-    else begin
-      AServerName := EmptyStr;
-    end;
-
-    if TryStrToInt(dcRevision, R) then
-      ARevision:= '~' + dcRevision
-    else begin
-      ARevision:= EmptyStr;
-    end;
-
-    Result := Format('%s%s %s%s',
-        ['Double Commander',
-        AServerName,
-        Copy2Space(dcVersion),
-        ARevision]
-    );
+      ServernameString := ' [' + UniqueInstance.ServernameByUser + ']';
+    Result := Format('%s%s %s %s %s', ['Double Commander', ServernameString, dcVersion, dcCommit, TargetOS]);
   end;
 
 var
@@ -6739,21 +6723,10 @@ begin
 end;
 
 procedure TfrmMain.UpdateMainTitleBar;
-var sTmp: String;
+var CurrentPath: String;
 begin
-    if gShowCurDirTitleBar and (fspDirectAccess in ActiveFrame.FileSource.Properties) then
-    begin
-        sTmp := ActiveFrame.CurrentPath;
-        Self.Caption:= Format('%s (%s) - %s',
-            [GetLastDir(sTmp),
-            sTmp,
-            sStaticTitleBarString]
-            );
-    end
-    else
-    begin
-        Self.Caption := sStaticTitleBarString;
-    end;
+  CurrentPath := ExcludeTrailingBackslash(ActiveFrame.CurrentLocation);
+  Self.Caption:= Format('%s - %s', [CurrentPath, sStaticTitleBarString]);
 end;
 
 procedure TfrmMain.UpdateGUIFunctionKeys;

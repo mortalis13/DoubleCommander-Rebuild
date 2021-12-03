@@ -38,7 +38,6 @@ type
     chkShowSplashForm: TCheckBox;
     chkDescCreateUnicode: TCheckBox;
     chkGoToRoot: TCheckBox;
-    chkShowCurDirTitleBar: TCheckBox;
     chkThumbSave: TCheckBox;
     chkShowWarningMessages: TCheckBox;
     cmbDescDefaultEncoding: TComboBox;
@@ -141,7 +140,6 @@ begin
   speThumbWidth.Value            := gThumbSize.cx;
   speThumbHeight.Value           := gThumbSize.cy;
   chkGoToRoot.Checked            := gGoToRoot;
-  chkShowCurDirTitleBar.Checked  := gShowCurDirTitleBar;
 
   Index:= cmbDefaultEncoding.Items.IndexOf(gDefaultTextEncoding);
   if (Index < 0) then
@@ -187,7 +185,6 @@ begin
   gThumbSize.cx        := speThumbWidth.Value;
   gThumbSize.cy        := speThumbHeight.Value;
   gGoToRoot            := chkGoToRoot.Checked;
-  gShowCurDirTitleBar  := chkShowCurDirTitleBar.Checked;
   gDefaultTextEncoding := NormalizeEncoding(cmbDefaultEncoding.Text);
 
   {$IFDEF MSWINDOWS}

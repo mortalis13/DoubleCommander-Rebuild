@@ -234,7 +234,7 @@ var
   gPrevTabInStackId: Integer;
   gFreeSorting: Boolean = False;
   gUseAliasCommands: Boolean = False;
-  
+
   { For localization }
   gPOFileName,
   gHelpLang: String;
@@ -1126,7 +1126,6 @@ begin
       AddIfNotExists(['Ctrl+PgUp'],[],'cm_ChangeDirToParent');
       AddIfNotExists(['Ctrl+Alt+Enter'],[],'cm_ShellExecute');
       AddIfNotExists(['Ctrl+Shift+A'],[],'cm_ShowTabsList');
-      AddIfNotExists(['Ctrl+Shift+B'],[],'cm_FlatViewSel');
       AddIfNotExists(['Ctrl+Shift+C'],[],'cm_CopyFullNamesToClip');
       AddIfNotExists(['Ctrl+Shift+D'],[],'cm_ConfigDirHotList');
       AddIfNotExists(['Ctrl+Shift+H'],[],'cm_HorizontalFilePanels');
@@ -1186,6 +1185,7 @@ begin
 
       AddIfNotExists(['Ctrl+Tab'],[],'cm_JumpToPrevTabInStack');
       AddIfNotExists(['F11'],[],'cm_MaximizePanel');
+      AddIfNotExists(['Ctrl+Shift+B'],[],'cm_OpenParentFolderExternal');
 
       if HotMan.Version < 38 then
       begin
@@ -3133,7 +3133,7 @@ begin
 
     { Directories HotList }
     gDirectoryHotlist.LoadFromXML(gConfig, Root);
-    
+
     { Extended page }
     Node := Root.FindNode('Extended');
     if Assigned(Node) then
@@ -3738,7 +3738,7 @@ begin
 
     { Directories HotList }
     gDirectoryHotlist.SaveToXml(gConfig, Root, TRUE);
-    
+
     { Extended page }
     Node := FindNode(Root, 'Extended', True);
     ClearNode(Node);

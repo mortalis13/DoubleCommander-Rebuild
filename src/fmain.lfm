@@ -2833,6 +2833,13 @@ object frmMain: TfrmMain
       Caption = 'Maximize Current Panel'
       OnExecute = actExecute
     end
+    object actOpenParentFolderExternal: TAction
+      Tag = 4
+      Category = 'File Operations'
+      Caption = 'Open Parent in Explorer'
+      Hint = 'Open Parent folder using system associations'
+      OnExecute = actExecute
+    end
     object actToggleAliasMode: TAction
       Tag = 14
       Category = 'Navigation'

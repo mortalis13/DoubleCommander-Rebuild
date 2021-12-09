@@ -6465,8 +6465,9 @@ begin
   // Save window bounds and state
   ANode := gConfig.FindNode(gConfig.RootNode, 'MainWindow/Position', True);
   begin
-    gConfig.SetValue(ANode, 'Left', FRestoredLeft);
-    gConfig.SetValue(ANode, 'Top', FRestoredTop);
+    // When the window is in the left-top corner of the screen the coordinates are -8,-8
+    gConfig.SetValue(ANode, 'Left', FRestoredLeft + 15);
+    gConfig.SetValue(ANode, 'Top', FRestoredTop + 15);
     gConfig.SetValue(ANode, 'Width', FRestoredWidth);
     gConfig.SetValue(ANode, 'Height', FRestoredHeight);
     gConfig.SetValue(ANode, 'PixelsPerInch', Screen.PixelsPerInch);
@@ -7247,18 +7248,15 @@ begin
   if FDelayedEventCtr > 0 then
     Exit;
   { update restored bounds }
-  if WindowState = wsNormal then
+  if FDelayedWMMove then
   begin
-    if FDelayedWMMove then
-    begin
-      FRestoredLeft := Left;
-      FRestoredTop := Top;
-    end;
-    if FDelayedWMSize then
-    begin
-      FRestoredWidth := Width;
-      FRestoredHeight := Height;
-    end;
+    FRestoredLeft := Left;
+    FRestoredTop := Top;
+  end;
+  if FDelayedWMSize then
+  begin
+    FRestoredWidth := Width;
+    FRestoredHeight := Height;
   end;
   FDelayedWMMove := False;
   FDelayedWMSize := False;

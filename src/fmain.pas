@@ -5109,10 +5109,6 @@ begin
       Button.OnPaint := @DriveButtonPaint;
     end; // for
 
-    // Add special buttons
-    if not gDrivesListButton then
-      AddSpecialButtons(dskPanel);
-
   finally
     dskPanel.EndUpdate;
   end;

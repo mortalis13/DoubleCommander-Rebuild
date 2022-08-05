@@ -6991,7 +6991,7 @@ begin
           lblDriveInfo.Caption := lblDriveInfo.Hint;
         end
       else
-        lblDriveInfo.Caption := '';
+        lblDriveInfo.Caption := ' ';
       sboxDrive.Hint := lblDriveInfo.Hint;
     end;
   end;

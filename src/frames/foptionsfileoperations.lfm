@@ -275,37 +275,6 @@ inherited frmOptionsFileOperations: TfrmOptionsFileOperations
       Caption = 'S&kip file operations errors and write them to log window'
       TabOrder = 4
     end
-    object lblTypeOfDuplicatedRename: TLabel
-      AnchorSideLeft.Control = cbSkipFileOpError
-      AnchorSideTop.Control = cmbTypeOfDuplicatedRename
-      AnchorSideTop.Side = asrCenter
-      Left = 10
-      Height = 20
-      Top = 166
-      Width = 241
-      Caption = 'Duplicated name auto-rename style:'
-      ParentColor = False
-    end
-    object cmbTypeOfDuplicatedRename: TComboBoxAutoWidth
-      AnchorSideLeft.Control = lblTypeOfDuplicatedRename
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Control = cbSkipFileOpError
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Side = asrBottom
-      Left = 255
-      Height = 28
-      Top = 162
-      Width = 100
-      BorderSpacing.Top = 4
-      ItemHeight = 20
-      Items.Strings = (
-        'DC legacy - Copy (x) filename.ext'
-        'Windows - filename (x).ext'
-        'Other - filename(x).ext'
-      )
-      Style = csDropDownList
-      TabOrder = 5
-    end
     object edtHashBufferSize: TEdit
       AnchorSideLeft.Control = lblHashBufferSize
       AnchorSideLeft.Side = asrBottom

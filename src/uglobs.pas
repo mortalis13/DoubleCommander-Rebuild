@@ -251,7 +251,7 @@ var
   gWCXConfigViewMode: TWcxCfgViewMode;
   gPluginFilenameStyle: TConfigFilenameStyle = pfsAbsolutePath;
   gPluginPathToBeRelativeTo: string = '%COMMANDER_PATH%';
-  
+
   { Colors }
   gColors: TColorThemes;
 
@@ -260,7 +260,7 @@ var
 
   { Columns Set }
   ColSet:TPanelColumnsList;
-  
+
   { Layout page }
   gMainMenu,
   gButtonBar,
@@ -342,7 +342,7 @@ var
   gColumnsAutoSaveWidth: Boolean;
   gColumnsTitleStyle: TTitleStyle;
   gCustomColumnsChangeAllColumns: Boolean;
-  
+
   gSpecialDirList:TSpecialDirList=nil;
   gDirectoryHotlist:TDirectoryHotlist;
   gHotDirAddTargetOrNot: Boolean;
@@ -477,7 +477,6 @@ var
   gNewSearchClearFiltersAction : TFiltersOnNewSearch;
   gShowMenuBarInFindFiles : Boolean;
   gSkipFileOpError: Boolean;
-  gTypeOfDuplicatedRename: tDuplicatedRename;
   gDropReadOnlyFlag : Boolean;
   gWipePassNumber: Integer;
   gProcessComments: Boolean;
@@ -535,7 +534,7 @@ var
   gSaveCreateDirectoriesHistory: Boolean;
   gSortOrderOfConfigurationOptionsTree: TSortConfigurationOptions;
   gCollapseConfigurationOptionsTree: TConfigurationTreeState;
-  
+
   { Quick Search page }
   gQuickSearchOptions: TQuickSearchOptions;
   gQuickFilterAutoHide: Boolean;
@@ -579,7 +578,7 @@ var
   gNameSCFile: string;
   gHotKeySortOrder: THotKeySortOrder;
   gUseEnterToCloseHotKeyEditor: boolean;
-  
+
   {Copy/Move operation options}
   gOperationOptionSymLinks: TFileSourceOperationOptionSymLink;
   gOperationOptionCorrectLinks: Boolean;
@@ -1919,7 +1918,6 @@ begin
   gShowCopyTabSelectPanel := False;
   gUseTrash := True;
   gSkipFileOpError := False;
-  gTypeOfDuplicatedRename := drLegacyWithCopy;
   gDefaultDropEffect:= True;
   gShowDialogOnDragDrop := True;
   gDragAndDropDesiredTextFormat[DropTextRichText_Index].Name:='Richtext format';
@@ -2884,7 +2882,6 @@ begin
       gShowCopyTabSelectPanel := GetValue(Node, 'ShowCopyTabSelectPanel', gShowCopyTabSelectPanel);
       gUseTrash := GetValue(Node, 'UseTrash', gUseTrash);
       gSkipFileOpError := GetValue(Node, 'SkipFileOpError', gSkipFileOpError);
-      gTypeOfDuplicatedRename := tDuplicatedRename(GetValue(Node, 'TypeOfDuplicatedRename', Integer(gTypeOfDuplicatedRename)));
       gDefaultDropEffect := GetValue(Node, 'DefaultDropEffect', gDefaultDropEffect);
       gShowDialogOnDragDrop := GetValue(Node, 'ShowDialogOnDragDrop', gShowDialogOnDragDrop);
       gDragAndDropDesiredTextFormat[DropTextRichText_Index].DesireLevel := GetValue(Node, 'DragAndDropTextRichtextDesireLevel', gDragAndDropDesiredTextFormat[DropTextRichText_Index].DesireLevel);
@@ -3568,7 +3565,6 @@ begin
     SetValue(Node, 'ShowCopyTabSelectPanel', gShowCopyTabSelectPanel);
     SetValue(Node, 'UseTrash', gUseTrash);
     SetValue(Node, 'SkipFileOpError', gSkipFileOpError);
-    SetValue(Node, 'TypeOfDuplicatedRename', Integer(gTypeOfDuplicatedRename));
     SetValue(Node, 'DefaultDropEffect', gDefaultDropEffect);
     SetValue(Node, 'ShowDialogOnDragDrop', gShowDialogOnDragDrop);
     SetValue(Node, 'DragAndDropTextRichtextDesireLevel', gDragAndDropDesiredTextFormat[DropTextRichText_Index].DesireLevel);
@@ -3896,7 +3892,7 @@ begin
   gConfig.SetValue(Node, 'AutoTweak', gPluginInAutoTweak);
   gConfig.SetValue(Node, 'WCXConfigViewMode', Integer(gWCXConfigViewMode));
   gConfig.SetValue(Node, 'PluginFilenameStyle', ord(gPluginFilenameStyle));
-  gConfig.SetValue(Node,'PluginPathToBeRelativeTo', gPluginPathToBeRelativeTo);  
+  gConfig.SetValue(Node,'PluginPathToBeRelativeTo', gPluginPathToBeRelativeTo);
 end;
 
 function LoadConfig: Boolean;

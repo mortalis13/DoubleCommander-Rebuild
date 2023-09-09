@@ -48,13 +48,11 @@ type
     cbDeleteToTrashConfirmation: TCheckBox;
     cbVerifyChecksumConfirmation: TCheckBox;
     cbTestArchiveConfirmation: TCheckBox;
-    cmbTypeOfDuplicatedRename: TComboBoxAutoWidth;
     edtBufferSize: TEdit;
     edtHashBufferSize: TEdit;
     gbUserInterface: TGroupBox;
     gbExecutingOperations: TGroupBox;
     lblHashBufferSize: TLabel;
-    lblTypeOfDuplicatedRename: TLabel;
     lblBufferSize: TLabel;
     lblProgressKind: TLabel;
     lblWipePassNumber: TLabel;
@@ -94,7 +92,6 @@ end;
 procedure TfrmOptionsFileOperations.Init;
 begin
   ParseLineToList(rsOptFileOperationsProgressKind, cbProgressKind.Items);
-  ParseLineToList(rsOptTypeOfDuplicatedRename, cmbTypeOfDuplicatedRename.Items);
 end;
 
 procedure TfrmOptionsFileOperations.cbDeleteToTrashChange(Sender: TObject);
@@ -135,7 +132,6 @@ begin
   cbTestArchiveConfirmation.Checked    := focTestArchive in gFileOperationsConfirmations;
   cbDeleteToTrashConfirmation.Checked  := focDeleteToTrash in gFileOperationsConfirmations;
   cbVerifyChecksumConfirmation.Checked := focVerifyChecksum in gFileOperationsConfirmations;
-  cmbTypeOfDuplicatedRename.ItemIndex  := Integer(gTypeOfDuplicatedRename);
 
   FLoading := False;
 end;
@@ -173,7 +169,6 @@ begin
     Include(gFileOperationsConfirmations, focDeleteToTrash);
   if cbVerifyChecksumConfirmation.Checked then
     Include(gFileOperationsConfirmations, focVerifyChecksum);
-  gTypeOfDuplicatedRename := tDuplicatedRename(cmbTypeOfDuplicatedRename.ItemIndex);
 end;
 
 constructor TfrmOptionsFileOperations.Create(TheOwner: TComponent);

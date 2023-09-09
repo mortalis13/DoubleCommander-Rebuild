@@ -197,36 +197,21 @@ var
   CopyNumber: Int64 = 1;
   sFilePath, sFileName, SuffixStr: String;
 begin
-  SuffixStr:= '';
-  sFilePath:= ExtractFilePath(FileName);
-  sFileName:= ExtractFileName(FileName);
+  SuffixStr := '';
+  
   repeat
-    case gTypeOfDuplicatedRename of
-      drLegacyWithCopy:
-        begin
-{$IFDEF UNIX}
-          if (Length(sFileName) > 0) and (sFileName[1] = ExtensionSeparator) then
-            Result := sFilePath + ExtensionSeparator + Format(rsCopyNameTemplate, [CopyNumber, Copy(sFileName, 2, MaxInt)])
-          else
-{$ENDIF}
-          Result := sFilePath + Format(rsCopyNameTemplate, [CopyNumber, sFileName]);
-        end;
-      drLikeWindows7, drLikeTC:
-        begin
-          if IsDirectory then
-            Result := FileName + SuffixStr
-          else
-            Result := sFilePath + RemoveFileExt(sFileName) + SuffixStr + ExtractFileExt(sFileName);
-        end;
+    if IsDirectory then
+      Result := FileName + SuffixStr
+    else
+    begin
+      sFilePath := ExtractFilePath(FileName);
+      sFileName := ExtractFileName(FileName);
+      Result := sFilePath + RemoveFileExt(sFileName) + SuffixStr + ExtractFileExt(sFileName);
     end;
 
     Inc(CopyNumber);
-    case gTypeOfDuplicatedRename of
-      drLikeWindows7: SuffixStr:= ' (' + IntToStr(CopyNumber) + ')';
-      drLikeTC: SuffixStr:= '(' + IntToStr(CopyNumber) + ')';
-    end;
-
-    until not mbFileSystemEntryExists(Result);
+    SuffixStr := '-' + IntToStr(CopyNumber);
+  until not mbFileSystemEntryExists(Result);
 end;
 
 function mbFileIsText(const FileName: String): Boolean;

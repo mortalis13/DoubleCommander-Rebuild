@@ -471,6 +471,7 @@ begin
       begin
         SizeProperty := TFileSizeProperty.Create(0);
         CompressedSizeProperty := TFileCompressedSizeProperty.Create(0);
+        FilesCountProperty := TFileFilesCountProperty.Create;
       end
     else
       begin

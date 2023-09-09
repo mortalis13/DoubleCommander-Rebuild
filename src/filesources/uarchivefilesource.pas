@@ -78,6 +78,7 @@ begin
   begin
     SizeProperty := TFileSizeProperty.Create;
     CompressedSizeProperty := TFileCompressedSizeProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
     AttributesProperty := TFileAttributesProperty.CreateOSAttributes;
     ModificationTimeProperty := TFileModificationDateTimeProperty.Create;
   end;

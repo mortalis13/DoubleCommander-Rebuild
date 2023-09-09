@@ -10,7 +10,7 @@ uses
   DCBasicTypes,
   uFileSourceOperation,
   uFileSourceListOperation,
-  fQuickSearch,uMasks;
+  fQuickSearch, uMasks, uDebug;
 
 type
   TFileViewWorkType = (fvwtNone,
@@ -1072,6 +1072,9 @@ begin
               CalcStatisticsOperationStatistics := CalcStatisticsOperation.RetrieveStatistics;
               AFile.Size := CalcStatisticsOperationStatistics.Size;
               if AFile.Size = 0 then AFile.Size:= FOLDER_SIZE_ZERO;
+              
+              AFile.FilesCount := IntToStr(CalcStatisticsOperationStatistics.Files) + 'F ' + IntToStr(CalcStatisticsOperationStatistics.Directories) + 'D';
+              
               Inc(FCompletedCalculations);
 
               TThread.Synchronize(Thread, @DoUpdateFile);

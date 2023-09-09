@@ -101,6 +101,7 @@ begin
     OwnerProperty := TFileOwnerProperty.Create;
     TypeProperty := TFileTypeProperty.Create;
     CommentProperty := TFileCommentProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
   end;
 end;
 

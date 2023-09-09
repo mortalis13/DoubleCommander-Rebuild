@@ -247,6 +247,7 @@ begin
       WinFileTimeToDateTime(pFindData^.ftLastAccessTime));
 
     LinkProperty := TFileLinkProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
 
     if fpS_ISLNK(AttributesProperty.Value) then
     begin
@@ -287,6 +288,7 @@ begin
     {$ENDIF}
 
     LinkProperty := TFileLinkProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
 
     if fpS_ISLNK(pStatInfo^.st_mode) then
     begin
@@ -318,6 +320,7 @@ begin
     CreationTimeProperty := TFileCreationDateTimeProperty.Create(pSearchRecord^.Time);
     LastAccessTimeProperty := TFileLastAccessDateTimeProperty.Create(pSearchRecord^.Time);
     LinkProperty := TFileLinkProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
   end;
 end;
 
@@ -382,6 +385,7 @@ begin
     OwnerProperty := TFileOwnerProperty.Create;
     TypeProperty := TFileTypeProperty.Create;
     CommentProperty := TFileCommentProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
   end;
 end;
 
@@ -410,6 +414,7 @@ begin
     AttributesProperty := TFileAttributesProperty.CreateOSAttributes(pSearchRecord^.Attr);
 
     LinkProperty := TFileLinkProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
 
     AFilePath:= Path + pSearchRecord^.Name;
 
@@ -598,6 +603,8 @@ begin
         LastAccessTimeProperty := TFileLastAccessDateTimeProperty.Create(
           WinFileTimeToDateTime(FindData.ftLastAccessTime));
     end;
+
+    FilesCountProperty := TFileFilesCountProperty.Create;
 
     if fpLink in PropertiesToSet then
     begin
@@ -908,7 +915,8 @@ begin
              fpChangeTime,
              {$ENDIF}
              fpLastAccessTime,
-             uFileProperty.fpLink
+             uFileProperty.fpLink,
+             fpFilesCount
              {$IF DEFINED(DARWIN)}
              ,fpMacOSSpecific
              {$ENDIF}

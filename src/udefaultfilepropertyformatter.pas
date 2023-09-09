@@ -14,6 +14,7 @@ type
 
   public
     function FormatFileName(FileProperty: TFileNameProperty): String;
+    function FormatFileFilesCount(FileProperty: TFileFilesCountProperty): String;
     function FormatFileSize(FileProperty: TFileSizeProperty): String;
     function FormatDateTime(FileProperty: TFileDateTimeProperty): String;
     function FormatModificationDateTime(FileProperty: TFileModificationDateTimeProperty): String;
@@ -26,6 +27,7 @@ type
 
   public
     function FormatFileName(FileProperty: TFileNameProperty): String;
+    function FormatFileFilesCount(FileProperty: TFileFilesCountProperty): String;
     function FormatFileSize(FileProperty: TFileSizeProperty): String;
     function FormatDateTime(FileProperty: TFileDateTimeProperty): String;
     function FormatModificationDateTime(FileProperty: TFileModificationDateTimeProperty): String;
@@ -67,6 +69,11 @@ begin
   Result := FormatDateTime(FileProperty);
 end;
 
+function TDefaultFilePropertyFormatter.FormatFileFilesCount(FileProperty: TFileFilesCountProperty): String;
+begin
+  Result := FileProperty.Value;
+end;
+
 function TDefaultFilePropertyFormatter.FormatNtfsAttributes(FileProperty: TNtfsFileAttributesProperty): String;
 {
   Format as decimal:
@@ -98,6 +105,11 @@ var
 begin
   d := FileProperty.Value;
   Result := Format('%.0n', [d]);
+end;
+
+function TMaxDetailsFilePropertyFormatter.FormatFileFilesCount(FileProperty: TFileFilesCountProperty): String;
+begin
+  Result := FileProperty.Value;
 end;
 
 function TMaxDetailsFilePropertyFormatter.FormatDateTime(

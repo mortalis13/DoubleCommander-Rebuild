@@ -539,6 +539,7 @@ begin
     LastAccessTimeProperty := TFileLastAccessDateTimeProperty.Create;
     CreationTimeProperty := TFileCreationDateTimeProperty.Create;
     LinkProperty := TFileLinkProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
   end;
 end;
 
@@ -575,6 +576,7 @@ begin
     ModificationTimeProperty := TFileModificationDateTimeProperty.Create(FindData.LastWriteTime);
     LastAccessTimeProperty := TFileLastAccessDateTimeProperty.Create(FindData.LastAccessTime);
     CreationTimeProperty := TFileCreationDateTimeProperty.Create(FindData.CreationTime);
+    FilesCountProperty := TFileFilesCountProperty.Create;
 
     // Set name after assigning Attributes property, because it is used to get extension.
     Name := FindData.FileName;

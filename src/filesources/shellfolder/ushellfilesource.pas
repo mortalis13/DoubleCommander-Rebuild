@@ -123,6 +123,7 @@ begin
   begin
     AttributesProperty := TFileAttributesProperty.CreateOSAttributes;
     SizeProperty := TFileSizeProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
     ModificationTimeProperty := TFileModificationDateTimeProperty.Create;
     CreationTimeProperty := TFileCreationDateTimeProperty.Create;
     LinkProperty := TFileShellProperty.Create;

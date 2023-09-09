@@ -67,6 +67,7 @@ begin
     ChangeTimeProperty:= TFileChangeDateTimeProperty.Create;
     LinkProperty := TFileLinkProperty.Create;
     CommentProperty := TFileCommentProperty.Create;
+    FilesCountProperty := TFileFilesCountProperty.Create;
   end;
 end;
 

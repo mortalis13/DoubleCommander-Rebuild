@@ -429,6 +429,8 @@ begin
   FHintPageIndex := -1;
   FNotebookSide := NotebookSide;
   FStartDrag := False;
+  
+  TabHeight := 34;
 
   OnShowHint := @TabShowHint;
 

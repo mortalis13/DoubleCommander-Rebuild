@@ -611,7 +611,7 @@ uses
   uShellExecute, fMaskInputDlg, uMasks, DCOSUtils, uOSUtils, DCStrUtils,
   uDCUtils, uDebug, uLng, uShowMsg, uFileSystemFileSource, uFileSourceUtil,
   uFileViewNotebook, uSearchTemplate, uKeyboard, uFileFunctions,
-  fMain, uSearchResultFileSource, uFileSourceProperty, uVfsModule, uFileViewWithPanels;
+  fMain, uSearchResultFileSource, uFileSourceProperty, uVfsModule, uFileViewWithPanels, uArchiveFileSourceUtil;
 
 const
   MinimumReloadInterval  = 1000; // 1 second
@@ -2311,7 +2311,7 @@ begin
         ChooseSymbolicLink(Self, FSFile)
       else if FSFile.IsDirectory then
         ChangePathToChild(FSFile)
-      else if not FolderMode then
+      else if (not FolderMode) or FileIsArchive(FSFile.FullPath) then
         try
           uFileSourceUtil.ChooseFile(Self, FileSource, FSFile);
         except

@@ -1956,16 +1956,38 @@ end;
 procedure TFileView.MarkCurrentExtension(bSelect: Boolean);
 var
   sGroup: String;
-  bCaseSensitive: boolean = false;
-  bIgnoreAccents: boolean = false;
-  bWindowsInterpretation: boolean = false;
+  bCaseSensitive: Boolean = false;
+  bIgnoreAccents: Boolean = false;
+  bWindowsInterpretation: Boolean = false;
+  bSelected: Boolean = false;
+  I: Integer;
 begin
   if IsActiveItemValid then
   begin
-    sGroup := GetActiveDisplayFile.FSFile.Extension;
-    if sGroup <> '' then
-      sGroup := '.' + sGroup;
-    MarkGroup('*' + sGroup, bSelect, @bCaseSensitive, @bIgnoreAccents, @bWindowsInterpretation);
+    if not GetActiveDisplayFile.FSFile.isDirectory then
+    begin
+      sGroup := GetActiveDisplayFile.FSFile.Extension;
+      if sGroup <> '' then
+        sGroup := '.' + sGroup;
+      MarkGroup('*' + sGroup, bSelect, @bCaseSensitive, @bIgnoreAccents, @bWindowsInterpretation);
+    end
+    else
+    begin
+      BeginUpdate;
+      try
+        for I := 0 to FFiles.Count - 1 do
+          if FFiles[I].FSFile.isDirectory then
+          begin
+            FFiles[I].Selected := bSelect;
+            bSelected := True;
+          end;
+        
+        if bSelected then
+          Notify([fvnSelectionChanged]);
+      finally
+        EndUpdate;
+      end;
+    end;
   end;
 end;
 

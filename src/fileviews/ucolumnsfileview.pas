@@ -383,15 +383,11 @@ begin
   if not IsLoadingFileList then
   begin
 
-    if (Shift=[ssCtrl])and(gFonts[dcfMain].Size < gFonts[dcfMain].MaxValue) then
+    if Shift=[ssCtrl] then
     begin
-      gFonts[dcfMain].Size:=gFonts[dcfMain].Size+1;
-      frmMain.FrameLeft.UpdateView;
-      frmMain.FrameRight.UpdateView;
-      Handled:=True;
+      dgPanel.Perform(LM_VSCROLL, SB_PAGEUP, 0);
       Exit;
     end;
-
 
     case gScrollMode of
       smLineByLine:
@@ -414,12 +410,9 @@ begin
   if not IsLoadingFileList then
   begin
 
-    if (Shift=[ssCtrl])and(gFonts[dcfMain].Size > gFonts[dcfMain].MinValue) then
+    if Shift=[ssCtrl] then
     begin
-      gFonts[dcfMain].Size:=gFonts[dcfMain].Size-1;
-      frmMain.FrameLeft.UpdateView;
-      frmMain.FrameRight.UpdateView;
-      Handled:=True;
+      dgPanel.Perform(LM_VSCROLL, SB_PAGEDOWN, 0);
       Exit;
     end;
 
@@ -789,8 +782,8 @@ begin
               AText := AFile.Name;
             end;
             lblInfo.Caption := AText;
-        end                       
-        else 
+        end
+        else
          if not AInfo then begin
             inherited UpdateInfoPanel;
          end;
@@ -2226,9 +2219,7 @@ begin
   FMouseDownY := Y;
   ColumnsView.FMainControlMouseDown := True;
 
-  AllowOutboundEvents := False;
   inherited MouseDown(Button, Shift, X, Y);
-  AllowOutboundEvents := True;
 
   if not Focused then
   begin
@@ -2238,9 +2229,7 @@ end;
 
 procedure TDrawGridEx.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  AllowOutboundEvents := False;
   inherited MouseMove(Shift, X, Y);
-  AllowOutboundEvents := True;
   if ColumnsView.IsMouseSelecting then DoMouseMoveScroll(X, Y);
 end;
 

@@ -6934,11 +6934,14 @@ begin
         sboxDrive.Invalidate;
       end;
       lblDriveInfo.Hint := Format(rsFreeMsg, [cnvFormatFileSize(AData.FreeSize, uoscHeader), cnvFormatFileSize(AData.TotalSize, uoscHeader)]);
-      if gShortFormatDriveInfo then
-        lblDriveInfo.Caption := Format(rsFreeMsgShort, [cnvFormatFileSize(AData.FreeSize, uoscHeader)])
-      else begin
-        lblDriveInfo.Caption := lblDriveInfo.Hint;
-      end;
+      if (AData.FreeSize > 0) or (AData.TotalSize > 0) then
+        if gShortFormatDriveInfo then
+          lblDriveInfo.Caption := Format(rsFreeMsgShort, [cnvFormatFileSize(AData.FreeSize, uoscHeader)])
+        else begin
+          lblDriveInfo.Caption := lblDriveInfo.Hint;
+        end
+      else
+        lblDriveInfo.Caption := '';
       sboxDrive.Hint := lblDriveInfo.Hint;
     end;
   end;

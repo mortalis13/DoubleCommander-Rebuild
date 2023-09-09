@@ -16,6 +16,13 @@ begin
   CustomOptions += &apos;-fPIC&apos;;
   UsageCustomOptions += &apos;-fPIC&apos;;
 end"/>
+      <Other>
+        <Verbosity>
+          <ShowWarn Value="False"/>
+          <ShowNotes Value="False"/>
+          <ShowHints Value="False"/>
+        </Verbosity>
+      </Other>
     </CompilerOptions>
     <Description Value="Image32 is a comprehensive 2D graphics library written entirely in Delphi Pascal, and without dependencies on other libraries. It provides an extensive range of image manipulation and drawing functions that includes text rendering through native parsing of truetype font files."/>
     <License Value="Boost Software License - Version 1.0"/>

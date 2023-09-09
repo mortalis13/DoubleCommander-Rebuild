@@ -20,6 +20,13 @@
           <DebugInfoType Value="dsDwarf2Set"/>
         </Debugging>
       </Linking>
+      <Other>
+        <Verbosity>
+          <ShowWarn Value="False"/>
+          <ShowNotes Value="False"/>
+          <ShowHints Value="False"/>
+        </Verbosity>
+      </Other>
     </CompilerOptions>
     <Description Value="ToolBar that loading from *.ini file. Format of *.ini file 
       KASBarMenu is popupmenu read *.bar file and uses *.bar buttons as menu items.

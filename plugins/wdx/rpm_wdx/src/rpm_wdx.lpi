@@ -158,6 +158,7 @@ end;"/>
     </Linking>
     <Other>
       <Verbosity>
+        <ShowWarn Value="False"/>
         <ShowNotes Value="False"/>
         <ShowHints Value="False"/>
       </Verbosity>

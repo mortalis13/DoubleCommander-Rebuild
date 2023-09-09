@@ -11,6 +11,11 @@
       </SearchPaths>
       <Other>
         <CustomOptions Value="$(IDEBuildOptions)"/>
+        <Verbosity>
+          <ShowWarn Value="False"/>
+          <ShowNotes Value="False"/>
+          <ShowHints Value="False"/>
+        </Verbosity>
       </Other>
     </CompilerOptions>
     <Description Value="Running procedures and methods parallel via a thread pool."/>

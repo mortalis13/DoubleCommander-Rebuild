@@ -18,6 +18,11 @@
       </Linking>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
+        <Verbosity>
+          <ShowWarn Value="False"/>
+          <ShowNotes Value="False"/>
+          <ShowHints Value="False"/>
+        </Verbosity>
       </Other>
     </CompilerOptions>
     <Description Value="Show Gif Animation

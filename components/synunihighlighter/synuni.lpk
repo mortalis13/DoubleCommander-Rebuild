@@ -29,6 +29,13 @@
           <UseExternalDbgSyms Value="True"/>
         </Debugging>
       </Linking>
+      <Other>
+        <Verbosity>
+          <ShowWarn Value="False"/>
+          <ShowNotes Value="False"/>
+          <ShowHints Value="False"/>
+        </Verbosity>
+      </Other>
     </CompilerOptions>
     <Description Value="SynUniHighlighter component version 1.8 for syntax highlighting with SynEdit
 Ported to Lazarus by eastorwest on February 2012"/>

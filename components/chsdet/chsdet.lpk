@@ -22,6 +22,13 @@
           <DebugInfoType Value="dsDwarf2Set"/>
         </Debugging>
       </Linking>
+      <Other>
+        <Verbosity>
+          <ShowWarn Value="False"/>
+          <ShowNotes Value="False"/>
+          <ShowHints Value="False"/>
+        </Verbosity>
+      </Other>
     </CompilerOptions>
     <Description Value="Charset Detector - as the name says - is a stand alone component for automatic charset detection of a given text.
 Given input buffer will be analysed to guess used encoding. The result can be used as control parameter for charset conversation procedure."/>

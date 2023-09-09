@@ -151,6 +151,11 @@ end;"/>
     </Linking>
     <Other>
       <CustomOptions Value="-dLCL$(LCLWidgetType)"/>
+      <Verbosity>
+        <ShowWarn Value="False"/>
+        <ShowNotes Value="False"/>
+        <ShowHints Value="False"/>
+      </Verbosity>
     </Other>
   </CompilerOptions>
 </CONFIG>

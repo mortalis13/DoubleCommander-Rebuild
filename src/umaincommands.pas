@@ -2516,7 +2516,11 @@ var
   bMakeViaCopy: Boolean = False;
   Operation: TFileSourceOperation = nil;
   UI: TFileSourceOperationMessageBoxesUI = nil;
+  sPathList: TStringList;
+  i: Integer;
 begin
+  sPathList := TStringList.Create;
+  
   with frmMain do
   try
     if not (fsoCreateDirectory in ActiveFrame.FileSource.GetOperationsTypes) then
@@ -2541,8 +2545,8 @@ begin
     else
       sPath := EmptyStr;
 
-    if not ShowMkDir(frmMain, sPath) then Exit;   // show makedir dialog
-    if (sPath = EmptyStr) then Exit;
+    if not ShowMkDir(frmMain, sPath, sPathList) then Exit;   // show makedir dialog
+    if (sPath = EmptyStr) and (sPathList.Count = 0) then Exit;
 
     if bMakeViaCopy then
     begin
@@ -2563,17 +2567,21 @@ begin
       end;
       Exit;
     end;
-
-    Operation := ActiveFrame.FileSource.CreateCreateDirectoryOperation(ActiveFrame.CurrentPath, sPath);
-    if Assigned(Operation) then
+    
+    for i:=0 to sPathList.Count-1 do
     begin
-      // Call directly - not through operations manager.
-      UI := TFileSourceOperationMessageBoxesUI.Create;
-      Operation.AddUserInterface(UI);
-      Operation.Execute;
+      sPath := sPathList[i];
+      Operation := ActiveFrame.FileSource.CreateCreateDirectoryOperation(ActiveFrame.CurrentPath, sPath);
+      if Assigned(Operation) then
+      begin
+        // Call directly - not through operations manager.
+        UI := TFileSourceOperationMessageBoxesUI.Create;
+        Operation.AddUserInterface(UI);
+        Operation.Execute;
 
-      sPath := ExtractFileName(ExcludeTrailingPathDelimiter(sPath));
-      ActiveFrame.SetActiveFile(sPath);
+        sPath := ExtractFileName(ExcludeTrailingPathDelimiter(sPath));
+        ActiveFrame.SetActiveFile(sPath);
+      end;
     end;
   finally
     FreeAndNil(Operation);

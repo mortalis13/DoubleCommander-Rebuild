@@ -27,10 +27,6 @@ lazbuild -q wdx\audioinfo\src\AudioInfo.lpi --os=%BUILD_OS%    --cpu=%BUILD_CPU%
 rem WFX plugins
 lazbuild -q wfx\ftp\src\ftp.lpi             --os=%BUILD_OS%    --cpu=%BUILD_CPU%
 
-rem WLX plugins
-lazbuild wlx\wmp\src\wmp.lpi             --os=%BUILD_OS%    --cpu=%BUILD_CPU%
-lazbuild wlx\preview\src\preview.lpi     --os=%BUILD_OS%    --cpu=%BUILD_CPU%
-
 rem Return from plugins directory
 popd
 

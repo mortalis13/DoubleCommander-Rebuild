@@ -29,19 +29,12 @@ $lazbuild wfx/ftp/src/ftp.lpi $DC_ARCH
 
 # Don't build under OS X
 if [ -z $(uname | grep Darwin) ]; then
-
   $lazbuild wfx/samba/src/samba.lpi $DC_ARCH
-
-  # WLX plugins
-  $lazbuild wlx/WlxMplayer/src/wlxMplayer.lpi $DC_ARCH
 
 else
 
   # WFX plugins
   $lazbuild wfx/MacCloud/src/MacCloud.lpi $DC_ARCH
-
-  # WLX plugins
-  $lazbuild wlx/MacPreview/src/MacPreview.lpi $DC_ARCH
 
 fi
 

@@ -4503,11 +4503,14 @@ begin
           AColor := pIndForeColor
         else
           AColor := pIndThresholdForeColor;
-        pbxDrive.Canvas.GradientFill(ARect, LightColor(AColor, 25), DarkColor(AColor, 25), gdVertical);
+        
+        pbxDrive.Canvas.Brush.Color:= AColor;
+        pbxDrive.Canvas.FillRect(ARect);
+        
         ARect.Left  := ARect.Right + 1;
         ARect.Right := pbxDrive.Width - 2;
-        AColor := pIndBackColor;
-        pbxDrive.Canvas.GradientFill(ARect, DarkColor(AColor, 25), LightColor(AColor, 25), gdVertical);
+        pbxDrive.Canvas.Brush.Color:= pIndBackColor;
+        pbxDrive.Canvas.FillRect(ARect);
       end
     else
       begin

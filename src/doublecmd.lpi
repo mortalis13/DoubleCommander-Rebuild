@@ -7,15 +7,17 @@
       <Flags>
         <SaveClosedFiles Value="False"/>
         <MainUnitHasUsesSectionForAllUnits Value="False"/>
-        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <AutoCreateForms Value="False"/>
       <Title Value="Double Commander"/>
       <Scaled Value="True"/>
       <ResourceType Value="res"/>
+      <MainUnit Value="0"/>
+      <Scaled Value="True"/>
+      <UseXPManifest Value="True"/>
       <XPManifest>
-        <DpiAware Value="True"/>
+        <DpiAware Value="True/PM"/>
       </XPManifest>
       <Icon Value="0"/>
       <Resources Count="1">

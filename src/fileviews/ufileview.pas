@@ -2943,6 +2943,11 @@ begin
   // Check if this is root level of the current file source.
   if FileSource.IsPathAtRoot(CurrentPath) then
   begin
+    if FileSourcesCount = 1 then
+    begin
+      FMethods.ExecuteCommand('cm_GoToFirstEntry', []);
+    end;
+    
     // If there is a higher level file source then change to it.
     if (FileSourcesCount > 1) and AllowChangingFileSource then
     begin

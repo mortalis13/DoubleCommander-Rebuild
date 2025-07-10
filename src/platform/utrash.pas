@@ -34,7 +34,7 @@ uses
 
 // this function move files and folders to trash can.
 function mbDeleteToTrash(const FileName: String): Boolean;
-// this funсtion checks trash availability.
+// this function checks trash availability.
 function mbCheckTrash(sPath: String): Boolean;
 
 var

@@ -2916,6 +2916,12 @@ object frmMain: TfrmMain
       Caption = 'Map Network Drive...'
       OnExecute = actExecute
     end
+    object actCreateFile: TAction
+      Tag = 4
+      Category = 'File Operations'
+      Caption = 'Create File'
+      OnExecute = actExecute
+    end
   end
   object pmHotList: TPopupMenu
     Images = imgLstDirectoryHotlist

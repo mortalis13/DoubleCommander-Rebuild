@@ -390,6 +390,7 @@ type
    procedure cm_ToggleFreeSorting(const Params: array of String);
    procedure cm_ToggleAliasMode(const Params: array of String);
    procedure cm_RenameFilesWithEditor(const Params: array of String);
+   procedure cm_CreateFile(const Params: array of String);
 
    // Internal commands
    procedure cm_ExecuteToolbarItem(const Params: array of string);
@@ -5972,6 +5973,67 @@ begin
 
   DummyForm.Free;
   AFileList.Free;
+end;
+
+procedure TMainCommands.cm_CreateFile(const Params: array of String);
+var
+  sNewFile: String;
+  hFile: System.THandle = 0;
+  aFile: TFile;
+  Attrs: TFileAttrs;
+  AElevate: TDuplicates = dupIgnore;
+  fs: IFileSource;
+begin
+  with frmMain do
+  if ActiveFrame.FileSource.IsClass(TFileSystemFileSource) then
+  begin
+    fs:= ActiveFrame.FileSource;
+    aFile := ActiveFrame.CloneActiveFile;
+    if Assigned(aFile) then
+    try
+      if aFile.IsNameValid then
+        sNewFile:= aFile.Name
+    finally
+      FreeAndNil(aFile);
+    end;
+
+    if not InputQuery(rsCreateFile, rsNewFileName, sNewFile) then Exit;
+
+    // If user entered only a filename prepend it with current directory.
+    if ExtractFilePath(sNewFile) = '' then
+      sNewFile:= fs.GetRealPath(ActiveFrame.CurrentPath) + sNewFile;
+
+    PushPop(AElevate);
+    try
+      sNewFile := TrimPath(sNewFile);
+      Attrs := FileGetAttrUAC(sNewFile);
+      if Attrs = faInvalidAttributes then
+      begin
+        hFile := FileCreateUAC(sNewFile, fmShareDenyWrite);
+        if hFile = feInvalidHandle then
+        begin
+          MessageDlg(rsMsgErrECreate, mbSysErrorMessage(GetLastOSError), mtWarning, [mbOK], 0);
+          Exit;
+        end;
+        FileClose(hFile);
+        fs.Reload(ExtractFilePath(sNewFile));
+        ActiveFrame.SetActiveFile(sNewFile);
+      end
+      else if FPS_ISDIR(Attrs) then
+      begin
+        MessageDlg(rsMsgErrECreate, Format(rsMsgErrCreateFileDirectoryExists,
+          [ExtractFileName(sNewFile)]), mtWarning, [mbOK], 0);
+        Exit;
+      end;
+    finally
+      PushPop(AElevate);
+    end;
+
+    aFile := TFileSystemFileSource.CreateFileFromFile(sNewFile);
+    ActiveFrame.SetActiveFile(aFile.FullPath);
+  end
+  else
+    msgWarning(rsMsgNotImplemented);
 end;
 
 end.

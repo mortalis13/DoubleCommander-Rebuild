@@ -765,6 +765,10 @@ resourcestring
   rsEditNewOpen = 'Open file';
   rsEditNewFileName = 'Filename:';
 
+  // Create
+  rsCreateFile = 'Create file';
+  rsNewFileName = 'Filename:';
+
   // Edit search
   rsEditSearchCaption = 'Search';
   rsEditSearchReplace ='Replace';

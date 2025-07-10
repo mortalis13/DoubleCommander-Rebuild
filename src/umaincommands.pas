@@ -2407,6 +2407,7 @@ var
   sStartPath: String = '';
   ACursor: Boolean = False;
   SelectedFiles: TFiles = nil;
+  bUseInternalEditor: Boolean = False;
 begin
   with frmMain do
   try
@@ -2453,7 +2454,14 @@ begin
       if gExts.GetExtActionCmd(aFile, 'edit', sCmd, sParams, sStartPath) then
         ProcessExtCommandFork(sCmd, sParams, aFile.Path)
       else
-        ShowEditorByGlob(aFile.FullPath);
+      begin
+        for Param in Params do
+        begin
+          if Param = 'UseInternal' then bUseInternalEditor := True;
+        end;
+
+        ShowEditorByGlob(aFile.FullPath, bUseInternalEditor);
+      end;
 
     except
       on e: EInvalidCommandLine do

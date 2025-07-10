@@ -195,8 +195,9 @@ end;"/>
             <Verbosity>
               <ShowNotes Value="False"/>
               <ShowHints Value="False"/>
+              <ShowWarn Value="False"/>
             </Verbosity>
-            <CustomOptions Value="-dNIGHTLY_BUILD"/>
+            <CustomOptions Value="-dNIGHTLY_BUILD -dDARKWIN"/>
             <ExecuteBefore>
               <Command Value="$(ProjPath)\platform\git2revisioninc$(ExeExt).cmd $MakeFile($(ProjOutDir))"/>
               <CompileReasons Run="False"/>
@@ -2159,6 +2160,11 @@ end;"/>
         <Command Value="$(ProjPath)\platform\git2revisioninc$(ExeExt).cmd $MakeFile($(ProjOutDir))"/>
         <CompileReasons Run="False"/>
       </ExecuteBefore>
+      <Verbosity>
+        <ShowWarn Value="False"/>
+        <ShowNotes Value="False"/>
+        <ShowHints Value="False"/>
+      </Verbosity>
     </Other>
   </CompilerOptions>
   <Debugging>

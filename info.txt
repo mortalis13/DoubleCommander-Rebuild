@@ -1,0 +1,2 @@
+- default font Windows - Segoe UI [Normal]
+- sample config file for portable install - ./install/windows/doublecmd.xml

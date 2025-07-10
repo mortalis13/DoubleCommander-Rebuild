@@ -1158,18 +1158,6 @@ begin
       AddIfNotExists(['Alt+Shift+Enter'],[],'cm_CountDirContent');
       AddIfNotExists(['Alt+Shift+F9'],[],'cm_TestArchive');
       AddIfNotExists([
-         'Alt+1','','index=1','',
-         'Alt+2','','index=2','',
-         'Alt+3','','index=3','',
-         'Alt+4','','index=4','',
-         'Alt+5','','index=5','',
-         'Alt+6','','index=6','',
-         'Alt+7','','index=7','',
-         'Alt+8','','index=8','',
-         'Alt+9','','index=9','',
-         'Alt+0','','index=-1',''],
-       'cm_ActivateTabByIndex');
-      AddIfNotExists([
         'Ctrl+1','','index=1','',
         'Ctrl+2','','index=2','',
         'Ctrl+3','','index=3','',
@@ -1178,8 +1166,23 @@ begin
         'Ctrl+6','','index=6','',
         'Ctrl+7','','index=7','',
         'Ctrl+8','','index=8','',
-        'Ctrl+9','','index=9',''],
-      'cm_OpenDriveByIndex');
+        'Ctrl+9','','index=9','',
+        'Ctrl+0','','index=-1',''],
+        'cm_ActivateTabByIndex'
+      );
+      AddIfNotExists([
+        'Alt+1','','index=1','',
+        'Alt+2','','index=2','',
+        'Alt+3','','index=3','',
+        'Alt+4','','index=4','',
+        'Alt+5','','index=5','',
+        'Alt+6','','index=6','',
+        'Alt+7','','index=7','',
+        'Alt+8','','index=8','',
+        'Alt+9','','index=9',''],
+        'cm_OpenDriveByIndex'
+      );
+      AddIfNotExists(['F12'],[],'cm_Options');
 
       AddIfNotExists(['Ctrl+Tab'],[],'cm_JumpToPrevTabInStack');
       AddIfNotExists(['F11'],[],'cm_MaximizePanel');
@@ -1450,7 +1453,6 @@ begin
       AddIfNotExists(['Alt+8'],[],'cm_LoadPreset8');
       AddIfNotExists(['Alt+9'],[],'cm_LoadPreset9');
       AddIfNotExists(['Ctrl+S'],[],'cm_SavePreset');
-      AddIfNotExists(['F12'],[],'cm_SavePresetAs');
       AddIfNotExists(['Shift+F6'],[],'cm_RenamePreset');
       AddIfNotExists(['Ctrl+D'],[],'cm_DeletePreset');
       AddIfNotExists(['Ctrl+Shift+S'],[],'cm_SortPresets');

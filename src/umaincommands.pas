@@ -381,6 +381,7 @@ type
    procedure cm_AddPlugin(const Params: array of string);
    procedure cm_LoadList(const Params: array of string);
    
+   procedure cm_JumpToPrevTabInStack(const Params: array of String);
    procedure cm_ToggleFreeSorting(const Params: array of String);
    procedure cm_ToggleAliasMode(const Params: array of String);
 
@@ -5640,6 +5641,17 @@ begin
       on E: Exception do msgError(E.Message);
     end;
     StringList.Free;
+  end;
+end;
+
+procedure TMainCommands.cm_JumpToPrevTabInStack(const Params: array of String);
+var
+  Index: Integer;
+begin
+  if gPrevTabInStackId <> -1 then
+  begin
+    Index := gPrevTabInStackId;
+    frmMain.ActiveNotebook.ActivateTabByIndex(Index);
   end;
 end;
 

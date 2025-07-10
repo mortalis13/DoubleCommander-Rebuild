@@ -231,6 +231,7 @@ const
   DropTextSimpleText_Index=3;
 
 var
+  gPrevTabInStackId: Integer;
   gFreeSorting: Boolean = False;
   gUseAliasCommands: Boolean = False;
   
@@ -1132,10 +1133,10 @@ begin
       AddIfNotExists(['Ctrl+Shift+X'],[],'cm_CopyNamesToClip');
       AddIfNotExists(['Ctrl+Shift+F1'],[],'cm_ThumbnailsView');
       AddIfNotExists(['Ctrl+Shift+Enter'],[],'cm_AddPathAndFilenameToCmdLine');
-      AddIfNotExists(['Ctrl+Shift+Tab'],[],'cm_PrevTab');
+      AddIfNotExists(['Ctrl+PgUp'],[],'cm_PrevTab');
       AddIfNotExists(['Ctrl+Shift+F7'],[],'cm_AddNewSearch');
       AddIfNotExists(['Ctrl+Shift+F8'],[],'cm_TreeView');
-      AddIfNotExists(['Ctrl+Tab'],[],'cm_NextTab');
+      AddIfNotExists(['Ctrl+PgDn'],[],'cm_NextTab');
       AddIfNotExists(['Ctrl+Up'],[],'cm_OpenDirInNewTab');
       AddIfNotExists(['Ctrl+\'],[],'cm_ChangeDirToRoot');
       AddIfNotExists(['Ctrl+.'],[],'cm_ShowSysFiles');
@@ -1182,6 +1183,8 @@ begin
         'Ctrl+8','','index=8','',
         'Ctrl+9','','index=9',''],
       'cm_OpenDriveByIndex');
+
+      AddIfNotExists(['Ctrl+Tab'],[],'cm_JumpToPrevTabInStack');
 
       if HotMan.Version < 38 then
       begin

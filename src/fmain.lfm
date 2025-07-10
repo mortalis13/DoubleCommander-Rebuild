@@ -2813,6 +2813,13 @@ object frmMain: TfrmMain
       Hint = 'Switch between left and right file list'
       OnExecute = actExecute
     end
+    object actJumpToPrevTabInStack: TAction
+      Tag = 21
+      Category = 'Tabs'
+      Caption = 'Jump to the previously selected tab'
+      HelpType = htKeyword
+      OnExecute = actExecute
+    end
     object actToggleFreeSorting: TAction
       Tag = 19
       Category = 'View'

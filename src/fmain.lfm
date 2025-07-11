@@ -2827,6 +2827,12 @@ object frmMain: TfrmMain
       HelpType = htKeyword
       OnExecute = actExecute
     end
+    object actMaximizePanel: TAction
+      Tag = 16
+      Category = 'Window'
+      Caption = 'Maximize Current Panel'
+      OnExecute = actExecute
+    end
     object actToggleAliasMode: TAction
       Tag = 14
       Category = 'Navigation'

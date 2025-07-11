@@ -1185,6 +1185,7 @@ begin
       'cm_OpenDriveByIndex');
 
       AddIfNotExists(['Ctrl+Tab'],[],'cm_JumpToPrevTabInStack');
+      AddIfNotExists(['F11'],[],'cm_MaximizePanel');
 
       if HotMan.Version < 38 then
       begin
@@ -1882,7 +1883,7 @@ begin
   gDriveBar2 := True;
   gDriveBarFlat := True;
   gDrivesListButton := True;
-  gDriveBarSyncWidth := False;
+  gDriveBarSyncWidth := True;
   gDirectoryTabs := True;
   gCurDir := True;
   gTabHeader := True;

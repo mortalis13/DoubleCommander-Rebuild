@@ -36,6 +36,8 @@ A custom build of the file manager [**Double Commander**](https://github.com/dou
 - when duplicating files in the same folder, always use the pattern 'file-counter'
 - when executing go-to-parent command in a drive root (left arrow), the first item is selected (home key trigger)
 - quick search/filter is resetting the default options when the search form is shown
+- delete dialog for WFX plugins (like FTP, ADB) is not blocking the UI during the operation
+- quick search allows to ignore some characters at the beginning, such as "\_-."
 
 ---
 

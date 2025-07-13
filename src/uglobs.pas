@@ -1102,7 +1102,7 @@ begin
       AddIfNotExists(['Alt+F8'],[],'cm_ShowCmdLineHistory');
       AddIfNotExists(['Ctrl+B'],[],'cm_FlatView');
       AddIfNotExists(['Ctrl+D'],[],'cm_DirHotList');
-      AddIfNotExists(['Ctrl+F'],[],'cm_QuickFilter');
+      AddIfNotExists(['Ctrl+F','','matchbeginning=false',''],'cm_QuickFilter');
       AddIfNotExists(['Ctrl+H'],[],'cm_DirHistory');
       AddIfNotExists(['Alt+Down'],'cm_DirHistory',['Ctrl+H'],[]); //Historic backward support reason...
       AddIfNotExists(['Ctrl+L'],[],'cm_CalculateSpace');

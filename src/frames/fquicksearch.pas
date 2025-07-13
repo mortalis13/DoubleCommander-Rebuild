@@ -112,7 +112,8 @@ uses
   LazUTF8,
   uKeyboard,
   uGlobs,
-  uFormCommands
+  uFormCommands,
+  uDebug
 {$IF DEFINED(LCLQT) or DEFINED(LCLQT5) or DEFINED(LCLQT6)}
   , uFileView
 {$ENDIF}
@@ -256,6 +257,10 @@ end;
 
 procedure TfrmQuickSearch.Execute(SearchMode: TQuickSearchMode; const Params: array of String; Char: TUTF8Char = #0);
 begin
+  Options := gQuickSearchOptions;
+  Options.LastSearchMode := qsNone;
+  LoadControlStates;
+
   Self.Visible := True;
 
   if not edtSearch.Focused then

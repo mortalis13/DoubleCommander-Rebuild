@@ -625,6 +625,9 @@ var
   Masks: TMaskList;
   AOptions: TMaskOptions = [moPinyin];
 
+const
+  SkipLeadingChars: set of char = ['_', '-', '.'];
+
   function NextIndexWrap(Index: PtrInt): PtrInt;
   begin
     Result := Index + 1;
@@ -678,7 +681,10 @@ begin
     if (SearchOptions.SearchCase = qscSensitive) then
       AOptions += [moCaseSensitive];
 
-    Masks:= TMaskList.Create(SearchTerm, ';,', AOptions);
+    if SearchOptions.LastSearchMode = qsSearch then
+      Masks:= TMaskList.Create(SearchTerm, ';,', AOptions, SkipLeadingChars)
+    else
+      Masks:= TMaskList.Create(SearchTerm, ';,', AOptions);
 
     for I := 0 to Masks.Count - 1 do
     begin

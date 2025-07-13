@@ -28,6 +28,7 @@ type
   TMaskCharType = (mcChar, mcAnyChar, mcAnyText);
   TMaskOption = (moCaseSensitive, moIgnoreAccents, moWindowsMask, moPinyin);
   TMaskOptions = set of TMaskOption;
+  TCharSet = set of Char;
 
   TMaskChar = record
     case CharType: TMaskCharType of
@@ -47,6 +48,7 @@ type
     FTemplate: String;
     FOriginal: String;
     FMask: TMaskString;
+    FSkipLeadingChars: TCharSet;
     FUsePinyin: Boolean;
     FCaseSensitive: Boolean;
     fIgnoreAccents: Boolean;
@@ -57,8 +59,8 @@ type
     procedure UpdateTemplate;
     procedure Update;
   public
-    constructor Create(const AValue: string; const AOptions: TMaskOptions = []);
-    function Matches(const AFileName: string): boolean;
+    constructor Create(const AValue: string; const AOptions: TMaskOptions = []; SkipLeadingChars: TCharSet = []);
+    function Matches(const AFileName: String): Boolean;
     function RegularMatches(const AFileName: string): boolean;
     function WindowsMatches(const AFileName: string): boolean;
     property CaseSensitive:boolean read FCaseSensitive write SetCaseSence;
@@ -78,7 +80,7 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
-    constructor Create(const AValue: string; ASeparatorCharset: string = ';'; const AOptions: TMaskOptions = []);
+    constructor Create(const AValue: string; ASeparatorCharset: string = ';'; const AOptions: TMaskOptions = []; SkipLeadingChars: TCharSet = []);
     destructor Destroy; override;
 
     function Matches(const AFileName: String): Boolean;
@@ -97,6 +99,7 @@ uses
   LazUTF8,
 
   //DC
+  uDebug,
   DCConvertEncoding, DCStrUtils, uPinyin, uAccentsUtils;
 
 { MatchesMask }
@@ -139,10 +142,11 @@ end;
 { TMask }
 
 { TMask.Create }
-constructor TMask.Create(const AValue: string; const AOptions: TMaskOptions);
+constructor TMask.Create(const AValue: string; const AOptions: TMaskOptions; SkipLeadingChars: TCharSet = []);
 begin
   FOriginal:= AValue;
   FTemplate:= AValue;
+  FSkipLeadingChars := SkipLeadingChars;
   FUsePinyin:= moPinyin in AOptions;
   FCaseSensitive := moCaseSensitive in AOptions;
   fIgnoreAccents := moIgnoreAccents in AOptions;
@@ -297,24 +301,42 @@ var
   function MatchToEnd(MaskIndex, CharIndex: Integer): Boolean;
   var
     I, J: Integer;
+    CharMatches: Boolean;
+    SkipCharsActive: Boolean;
   begin
     Result := False;
+    SkipCharsActive := True;
 
-    for I := MaskIndex to High(FMask.Chars) do
+    I := MaskIndex;
+    while I <= High(FMask.Chars) do
     begin
       case FMask.Chars[I].CharType of
         mcChar:
           begin
             if CharIndex > L then Exit;
             //DCDebug('Match ' + S[CharIndex] + '<?>' + FMask.Chars[I].CharValue);
+
             if FUsePinyin then
             begin
-              if not PinyinMatch(S[CharIndex], FMask.Chars[I].CharValue) then exit;
+              CharMatches := PinyinMatch(S[CharIndex], FMask.Chars[I].CharValue);
             end
             else
             begin
-              if S[CharIndex] <> FMask.Chars[I].CharValue then Exit;
+              CharMatches := S[CharIndex] = FMask.Chars[I].CharValue;
             end;
+
+            if not CharMatches then
+            begin
+              if SkipCharsActive and (S[CharIndex] in FSkipLeadingChars) then
+              begin
+                Inc(CharIndex);
+                Continue;
+              end
+              else Exit;
+            end
+            else
+              SkipCharsActive := False;
+
             Inc(CharIndex);
           end;
         mcAnyChar:
@@ -338,6 +360,8 @@ var
               end;
           end;
       end;
+      
+      Inc(I);
     end;
 
     Result := CharIndex > L;
@@ -427,7 +451,7 @@ begin
 end;
 
 { TMaskList.Create }
-constructor TMaskList.Create(const AValue: string; ASeparatorCharset: string; const AOptions: TMaskOptions);
+constructor TMaskList.Create(const AValue: string; ASeparatorCharset: string; const AOptions: TMaskOptions; SkipLeadingChars: TCharSet = []);
 var
   I: Integer;
   S: TParseStringList;
@@ -438,7 +462,7 @@ begin
   S := TParseStringList.Create(AValue, ASeparatorCharset);
   try
     for I := 0 to S.Count - 1 do
-      FMasks.Add(TMask.Create(S[I], AOptions));
+      FMasks.Add(TMask.Create(S[I], AOptions, SkipLeadingChars));
   finally
     S.Free;
   end;

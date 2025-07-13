@@ -419,7 +419,7 @@ uses fOptionsPluginsBase, fOptionsPluginsDSX, fOptionsPluginsWCX,
      uHotDir, DCXmlConfig, dmCommonData, fOptionsFrame, foptionsDirectoryHotlist,
      fMainCommandsDlg, uConnectionManager, fOptionsFavoriteTabs, fTreeViewMenu,
      uArchiveFileSource, fOptionsHotKeys, fBenchmark, uAdministrator, uWcxArchiveFileSource,
-     uColumnsFileView, fStatistics, ExtCtrls, uColumns
+     uColumnsFileView, fStatistics, ExtCtrls, uColumns, uDebug
      ;
 
 resourcestring
@@ -2769,6 +2769,10 @@ begin
           end;
         end;
 
+        // Non-blocking dialog for WFX (FTP, ADB)
+        if FileSource.IsClass(TWfxPluginFileSource) then
+          QueueId := SingleQueueId;
+
         Operation := FileSource.CreateDeleteOperation(theFilesToDelete);
 
         if Assigned(Operation) then
@@ -2778,7 +2782,6 @@ begin
             with Operation as TFileSystemDeleteOperation do
             begin
               if bSkipErrors then SkipErrors := True;
-              // 30.04.2009 - передаем параметр корзины в поток.
               Recycle := bRecycle;
             end;
 

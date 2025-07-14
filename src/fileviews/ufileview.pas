@@ -215,6 +215,7 @@ type
     procedure SetFileList(var NewAllDisplayFiles: TDisplayFiles;
                           var NewFilteredDisplayFiles: TDisplayFiles);
     procedure SetFlatView(AFlatView: Boolean);
+    procedure SetFoldersFlatView(AFlatView: Boolean);
 
     procedure ActivateEvent(Sender: TObject);
     function CheckIfDelayReload: Boolean;
@@ -229,6 +230,7 @@ type
 
   protected
     FFlatView: Boolean;
+    FFoldersFlatView: Boolean;
     FFileFilter: String;
     FAllDisplayFiles: TDisplayFiles;    //<en List of all files that can be displayed
     FFiles: TDisplayFiles;              //<en List of displayed files (filtered)
@@ -539,6 +541,7 @@ type
     property FileSourcesCount: Integer read GetFileSourcesCount;
     property Flags: TFileViewFlags read FFlags write SetFlags;
     property FlatView: Boolean read FFlatView write SetFlatView;
+    property FoldersFlatView: Boolean read FFoldersFlatView write SetFoldersFlatView;
     property Path[FileSourceIndex, PathIndex: Integer]: String read GetPath;
     property PathsCount[FileSourceIndex: Integer]: Integer read GetPathsCount;
 
@@ -761,6 +764,7 @@ begin
   begin
     AFileView.FFlags := FFlags;
     AFileView.FFlatView := FFlatView;
+    AFileView.FFoldersFlatView := FFoldersFlatView;
     AFileView.FLastLoadedFileSource := FLastLoadedFileSource;
     AFileView.FLastLoadedPath := FLastLoadedPath;
     AFileView.FLastMark := FLastMark;
@@ -1592,6 +1596,7 @@ begin
   if (NewPath <> CurrentPath) and BeforeChangePath(FileSource, cprChange, NewPath) then
   begin
     FFlatView:= False;
+    FFoldersFlatView:= False;
     EnableWatcher(False);
     FHistory.AddPath(NewPath); // Sets CurrentPath.
     AfterChangePath;
@@ -2203,6 +2208,7 @@ begin
     CurrentPath,
     SortingForSorter,
     FlatView,
+    FoldersFlatView,
     AThread,
     FSortingProperties,
     GetVariantFileProperties,
@@ -3058,6 +3064,7 @@ begin
   if Result then
   begin
     FFlatView := False;
+    FFoldersFlatView := False;
 
     if Assigned(FileSource) and IsNewFileSource then
       FileSource.RemoveEventListener(@FileSourceEventListener);
@@ -3094,6 +3101,7 @@ begin
   if FileSourcesCount > 0 then
   begin
     FFlatView := False;
+    FFoldersFlatView := False;
     // TODO: Do this by remembering focused file name in a list?
     FocusedFile := ExtractFileName(FileSource.CurrentAddress);
 
@@ -3425,6 +3433,12 @@ begin
   FileSource.GetWatcher.UpdateWatch;
 end;
 
+procedure TFileView.SetFoldersFlatView(AFlatView: Boolean);
+begin
+  FFoldersFlatView:= AFlatView;
+  FileSource.GetWatcher.UpdateWatch;
+end;
+
 procedure TFileView.ActivateEvent(Sender: TObject);
 begin
   SetFlags(Flags - [fvfDelayLoadingFiles]);
@@ -3592,6 +3606,7 @@ begin
                       FHistory.Path[aFileSourceIndex, aPathIndex]) then
   begin
     FFlatView := False;
+    FFoldersFlatView := False;
 
     FilenameFromHistory := FHistory.Filename[aFileSourceIndex, aPathIndex];
 

@@ -1100,7 +1100,8 @@ begin
       end;
 
       AddIfNotExists(['Alt+F8'],[],'cm_ShowCmdLineHistory');
-      AddIfNotExists(['Ctrl+B'],[],'cm_FlatView');
+      AddIfNotExists(['Ctrl+B','','','',
+                      'Ctrl+Shift+B','','FoldersOnly',''],'cm_FlatView');
       AddIfNotExists(['Ctrl+D'],[],'cm_DirHotList');
       AddIfNotExists(['Ctrl+F','','matchbeginning=false',''],'cm_QuickFilter');
       AddIfNotExists(['Ctrl+H'],[],'cm_DirHistory');
@@ -1186,7 +1187,7 @@ begin
 
       AddIfNotExists(['Ctrl+Tab'],[],'cm_JumpToPrevTabInStack');
       AddIfNotExists(['F11'],[],'cm_MaximizePanel');
-      AddIfNotExists(['Ctrl+Shift+B'],[],'cm_OpenParentFolderExternal');
+      AddIfNotExists(['Ctrl+Shift+E'],[],'cm_OpenParentFolderExternal');
       AddIfNotExists(['Ctrl+Up'],[],'cm_ChangeDirToPrevSibling');
       AddIfNotExists(['Ctrl+Down'],[],'cm_ChangeDirToNextSibling');
       AddIfNotExists(['Ctrl+Shift+R'],[],'cm_RenameFilesWithEditor');

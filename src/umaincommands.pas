@@ -1183,6 +1183,7 @@ var
   AFile: TFile;
   AFileView: TFileView;
   AValue, Param: String;
+  bFoldersOnly: Boolean = False;
 begin
   with frmMain do
   begin
@@ -1195,7 +1196,10 @@ begin
         if AValue = 'left' then AFileView:= FrameLeft
         else if AValue = 'right' then AFileView:= FrameRight
         else if AValue = 'inactive' then AFileView:= NotActiveFrame;
-      end
+      end;
+      
+      if Param = 'FoldersOnly' then
+        bFoldersOnly := True;
     end;
 
     if not (fspListFlatView in AFileView.FileSource.GetProperties) then
@@ -1203,7 +1207,17 @@ begin
       msgWarning(rsMsgErrNotSupported);
     end
     else begin
-      AFileView.FlatView:= not AFileView.FlatView;
+      if bFoldersOnly then
+      begin
+        AFileView.FoldersFlatView := not AFileView.FoldersFlatView;
+        AFileView.FlatView := False;
+      end
+      else
+      begin
+        AFileView.FlatView := not AFileView.FlatView;
+        AFileView.FoldersFlatView := False;
+      end;
+      
       if not AFileView.FlatView then
       begin
         AFile:= AFileView.CloneActiveFile;

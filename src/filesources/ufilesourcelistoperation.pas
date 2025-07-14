@@ -24,6 +24,7 @@ type
   protected
     FFiles: TFiles;
     FFlatView: Boolean;
+    FFoldersFlatView: Boolean;
 
     function GetFiles: TFiles;
     function GetID: TFileSourceOperationType; override;
@@ -45,6 +46,7 @@ type
     property Files: TFiles read GetFiles;
     property Path: String read FPath;
     property FlatView: Boolean write FFlatView;
+    property FoldersFlatView: Boolean write FFoldersFlatView;
 
   end;
 

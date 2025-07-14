@@ -95,6 +95,7 @@ type
     FFilterOptions: TQuickSearchOptions;
     FCurrentPath: String;
     FFlatView: Boolean;
+    FFoldersFlatView: Boolean;
     FSortings: TFileSortings;
     FVariantProperties: TDynamicStringArray;
     FFilePropertiesNeeded: TFilePropertiesTypes;
@@ -129,6 +130,7 @@ type
                        const ACurrentPath: String;
                        const ASorting: TFileSortings;
                        AFlatView: Boolean;
+                       AFoldersFlatView: Boolean;
                        AThread: TThread;
                        AFilePropertiesNeeded: TFilePropertiesTypes;
                        AVariantProperties: TDynamicStringArray;
@@ -387,7 +389,7 @@ end;
 constructor TFileListBuilder.Create(AFileSource: IFileSource;
   AFileSourceIndex: Integer; const AFileFilter: String;
   const AFilterOptions: TQuickSearchOptions; const ACurrentPath: String;
-  const ASorting: TFileSortings; AFlatView: Boolean; AThread: TThread;
+  const ASorting: TFileSortings; AFlatView: Boolean; AFoldersFlatView: Boolean; AThread: TThread;
   AFilePropertiesNeeded: TFilePropertiesTypes;
   AVariantProperties: TDynamicStringArray;
   ASetFileListMethod: TSetFileListMethod;
@@ -408,6 +410,7 @@ begin
   FFileSource           := AFileSource;
   FFileSourceIndex      := AFileSourceIndex;
   FFlatView             := AFlatView;
+  FFoldersFlatView      := AFoldersFlatView;
   FFileFilter           := AFileFilter;
   FFilterOptions        := AFilterOptions;
   FCurrentPath          := ACurrentPath;
@@ -462,6 +465,7 @@ begin
       if Assigned(FListOperation) then
       try
         FListOperation.FlatView := FFlatView;
+        FListOperation.FoldersFlatView := FFoldersFlatView;
         FListOperation.AssignThread(Thread);
         FListOperation.Execute;
         if FListOperation.Result = fsorFinished then

@@ -665,7 +665,7 @@ resourcestring
   rsDefaultPersonalizedAbbrevMega = 'MB';
   rsDefaultPersonalizedAbbrevGiga = 'GB';
   rsDefaultPersonalizedAbbrevTera = 'TB';
-  rsAbbrevDisplayDir = '<DIR>';
+  rsAbbrevDisplayDir = '';
   rsAbbrevDisplayLink = '<LNK>';
   rsOptPersonalizedFileSizeFormat = 'Personalized float;Personalized byte;Personalized kilobyte;Personalized megabyte;Personalized gigabyte;Personalized terabyte';
   rsOptFileSizeFloat = 'float';

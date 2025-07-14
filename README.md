@@ -164,7 +164,7 @@ Then enter the alias in the **command line** within Double Commander and press E
 1. Install [Lazarus 2.2.6](https://www.lazarus-ide.org/index.php?page=downloads)
 2. Install **Cross Compilation Addon**. Go to the **Windows (64 Bits) Add ons** link on the **Downloads** page and get the installer named **...cross-i386-win32...**
 3. In the **r.bat** modify `lazpath` and `BUILD_OS` variables
-4. Run from the console `ra` -> **run all**
+4. Run from the console `r all`
 
-- To rebuild the code if build errors occur run `rr` -> **run rebuild**
-- To build the final ready to use executables (x32 and x64) run `rp` -> **run pack**
+- To rebuild the code if build errors occur run `r rebuild`
+- To build the final ready to use executables (x32 and x64) run `r pack`

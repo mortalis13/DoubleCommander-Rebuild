@@ -55,5 +55,3 @@
 @del /Q /S components\viewer\lib\*.* > nul 2>&1
 @del /Q /S components\synunihighlighter\lib\*.* > nul 2>&1
 @del /Q /S components\virtualterminal\lib\*.* > nul 2>&1
-
-@echo.

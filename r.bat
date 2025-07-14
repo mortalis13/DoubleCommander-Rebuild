@@ -3,39 +3,53 @@
 set lazpath=d:\progs\lazarus-2.2.6
 
 set BUILD_OS=win64
-set BUILD_PROFILE=debug
-
-if "%BUILD_OS%" == "win64" (
+if %BUILD_OS%==win64 (
   set BUILD_CPU=x86_64
 )
-if "%BUILD_OS%" == "win32" (
+if %BUILD_OS%==win32 (
   set BUILD_CPU=i386
 )
-set PATH=%lazpath%;%PATH%
 
+set BUILD_PROFILE=debug
+if not "%2"=="" (
+  set BUILD_PROFILE=%2
+)
+
+set PATH=%lazpath%;%PATH%
 
 rem ---------------------------------
 del /Q doublecmd.exe
 
-if "%1"=="all" (
+set op=default
+if not "%1"=="" set op=%1
+if %op%==a set op=all
+if %op%==b set op=build
+if %op%==r set op=rebuild
+if %op%==p set op=pack
+if %op%==c set op=clean_dev
+if %op%==ca set op=clean_all
+
+if %op%==all (
   call :all
 )
-if "%1"=="rebuild" (
+if %op%==rebuild (
   call :rebuild
 )
-if "%1"=="rebuild_run" (
-  call :rebuild
-  call :run
-)
-if "%1"=="pack" (
+if %op%==pack (
   call :pack
 )
-if "%1"=="build" (
+if %op%==build (
   call :build
 )
-if "%1"=="" (
+if %op%==clean_dev (
+  call clean_dev
+)
+if %op%==clean_all (
+  call clean
+)
+if %op%==default (
   call :build
-  call :run
+  call run
 )
 
 goto:eof
@@ -49,7 +63,6 @@ rem ----------------------------------
   call components\build
   call plugins\build
   call :build
-  echo.
 goto:eof
 
 :rebuild
@@ -60,8 +73,9 @@ goto:eof
 
 :build
   echo [Build]
-  lazbuild -q src\doublecmd.lpi --bm=%BUILD_PROFILE% --os=%BUILD_OS% --cpu=%BUILD_CPU%
+  lazbuild --bm=%BUILD_PROFILE% --os=%BUILD_OS% --cpu=%BUILD_CPU% src\doublecmd.lpi
   echo.
+  echo Built for: %BUILD_PROFILE%, %BUILD_OS%, %BUILD_CPU%, %lazpath%
 goto:eof
 
 :pack
@@ -79,11 +93,4 @@ goto:eof
   set BUILD_CPU=x86_64
   call :all
   copy doublecmd.exe dist\win64\
-goto:eof
-
-:run
-  echo [Run]
-  if exist doublecmd.exe (
-    start doublecmd.exe
-  )
 goto:eof

@@ -430,7 +430,6 @@ type
     procedure EnablePrint(AEnabled: Boolean);
     procedure EnableSearch(AEnabled: Boolean);
     procedure EnableActions(AEnabled: Boolean);
-    procedure SavingProperties(Sender: TObject);
     procedure SetFileName(const AValue: String);
     procedure SaveImageAs (Var sExt: String; senderSave: boolean; Quality: integer);
     procedure ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
@@ -1631,14 +1630,6 @@ begin
   actDeleteFile.Enabled:= AEnabled and (FileList.Count > 1);
 end;
 
-procedure TfrmViewer.SavingProperties(Sender: TObject);
-begin
-  // Allow only state saving, as text is scaled incorrectly
-  // when maximized mode is used with mutiple monitors with different scaling factors
-  SessionProperties := 'WindowState';
-  if miFullScreen.Checked then SessionProperties:= EmptyStr;
-end;
-
 procedure TfrmViewer.SetFileName(const AValue: String);
 begin
   if actAutoReload.Checked then
@@ -2340,12 +2331,8 @@ var
   HMViewer: THMForm;
   MenuItem: TMenuItem;
 begin
-  if not bQuickView then
+  if bQuickView then
   begin
-    with InitPropStorage(Self) do
-      OnSavingProperties:= @SavingProperties;
-  end
-  else begin
     miDiv4.Visible:= False;
     actPreview.Enabled:= False;
     actPreview.Visible:= False;

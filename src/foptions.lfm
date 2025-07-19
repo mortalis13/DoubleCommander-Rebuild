@@ -9,7 +9,8 @@ object frmOptions: TfrmOptions
   ClientHeight = 600
   ClientWidth = 800
   Position = poScreenCenter
-  SessionProperties = 'Height;Left;Top;TreeFilterEdit.Width;tvTreeView.Width;Width;WindowState'
+  WindowState = wsMaximized
+  SessionProperties = 'TreeFilterEdit.Width;tvTreeView.Width'
   ShowInTaskBar = stAlways
   LCLVersion = '4.99.0.0'
   OnClose = FormClose

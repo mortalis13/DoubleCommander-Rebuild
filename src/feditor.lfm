@@ -3,6 +3,7 @@ object frmEditor: TfrmEditor
   Height = 480
   Top = 271
   Width = 640
+  WindowState = wsMaximized
   ActiveControl = Editor
   Caption = 'Editor'
   ClientHeight = 460
@@ -51,7 +52,6 @@ object frmEditor: TfrmEditor
   OnClose = frmEditorClose
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
-  SessionProperties = 'Height;Width;WindowState;Left;Top'
   ShowInTaskBar = stAlways
   LCLVersion = '3.8.0.0'
   object StatusBar: TStatusBar

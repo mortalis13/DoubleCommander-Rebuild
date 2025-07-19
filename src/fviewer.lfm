@@ -3,6 +3,7 @@ object frmViewer: TfrmViewer
   Height = 366
   Top = 427
   Width = 521
+  WindowState = wsMaximized
   HorzScrollBar.Page = 951
   VertScrollBar.Page = 491
   Caption = 'Viewer'
@@ -267,7 +268,6 @@ object frmViewer: TfrmViewer
   OnKeyPress = FormKeyPress
   OnResize = FormResize
   OnShow = FormShow
-  SessionProperties = 'Height;Width;Left;Top;WindowState'
   ShowHint = True
   ShowInTaskBar = stAlways
   LCLVersion = '2.2.7.0'

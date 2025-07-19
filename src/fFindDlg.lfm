@@ -3,6 +3,7 @@ object frmFindDlg: TfrmFindDlg
   Height = 469
   Top = 176
   Width = 875
+  WindowState = wsMaximized
   Caption = 'Find files'
   ClientHeight = 449
   ClientWidth = 875
@@ -16,7 +17,6 @@ object frmFindDlg: TfrmFindDlg
   OnDestroy = FormDestroy
   OnShow = frmFindDlgShow
   Position = poScreenCenter
-  SessionProperties = 'Height;Left;Top;Width;WindowState'
   ShowInTaskBar = stAlways
   LCLVersion = '2.0.7.0'
   object pnlFindFile: TPanel

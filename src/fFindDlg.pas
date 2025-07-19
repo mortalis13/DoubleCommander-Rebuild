@@ -718,8 +718,6 @@ begin
   cbPartialNameSearch.Checked := gPartialNameSearch;
   FontOptionsToFont(gFonts[dcfSearchResults], lsFoundedFiles.Font);
 
-  InitPropStorage(Self);
-
   HMFindFiles := HotMan.Register(Self, HotkeysCategory);
   HMFindFiles.RegisterActionList(actList);
 

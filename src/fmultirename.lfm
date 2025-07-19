@@ -3,6 +3,7 @@ object frmMultiRename: TfrmMultiRename
   Height = 624
   Top = 132
   Width = 788
+  WindowState = wsMaximized
   ActiveControl = cbName
   Caption = 'Multi-Rename Tool'
   ClientHeight = 597
@@ -14,7 +15,7 @@ object frmMultiRename: TfrmMultiRename
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  SessionProperties = 'Height;Left;Top;Width;WindowState;pnlOptionsLeft.Width'
+  SessionProperties = 'pnlOptionsLeft.Width'
   ShowHint = True
   ShowInTaskBar = stAlways
   LCLVersion = '2.0.12.0'

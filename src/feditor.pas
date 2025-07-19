@@ -277,8 +277,6 @@ var
   EncodingsList: TStringList;
   Options: TTextSearchOptions;
 begin
-  InitPropStorage(Self);
-
   Menu.Images:= dmComData.ilEditorImages;
   StatusBar.OnShowHint:= @StatusBarShowHint;
 

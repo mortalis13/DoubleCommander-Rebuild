@@ -1272,7 +1272,7 @@ begin
           Remove(HMHotKey);
       end;
 
-      AddIfNotExists(['1'],[],'cm_ShowAsText');
+      AddIfNotExists(['1'],[],'cm_ShowDefault');
       AddIfNotExists(['2'],[],'cm_ShowAsBin');
       AddIfNotExists(['3'],[],'cm_ShowAsHex');
       AddIfNotExists(['4'],[],'cm_ShowAsDec');
@@ -1280,7 +1280,7 @@ begin
       AddIfNotExists(['6'],[],'cm_ShowGraphics');
       AddIfNotExists(['7'],[],'cm_ShowPlugins');
       AddIfNotExists(['8'],[],'cm_ShowOffice');
-      AddIfNotExists(['9'],[],'cm_ShowCode');
+      AddIfNotExists(['0'],[],'cm_ShowAsText');
 
       AddIfNotExists(['C'],[],'cm_ImageCenter');
       AddIfNotExists(['F'],[],'cm_StretchImage');

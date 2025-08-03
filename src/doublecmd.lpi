@@ -77,7 +77,7 @@ end;"/>
             </Debugging>
           </Linking>
           <Other>
-            <CustomOptions Value="-dHEAPTRC -dHEAPTRC_EXTRA"/>
+            <CustomOptions Value="-dHEAPTRC -dHEAPTRC_EXTRA -dDARKWIN"/>
             <ExecuteBefore>
               <Command Value="$(ProjPath)\platform\git2revisioninc$(ExeExt).cmd $MakeFile($(ProjOutDir))"/>
               <CompileReasons Run="False"/>
@@ -2156,6 +2156,7 @@ end;"/>
       </Debugging>
     </Linking>
     <Other>
+      <CustomOptions Value="-dDARKWIN"/>
       <OtherDefines Count="1">
         <Define0 Value="NoCocoaModernForm"/>
       </OtherDefines>

@@ -19,6 +19,7 @@ A custom build of the file manager [**Double Commander**](https://github.com/dou
 - `cm_Copy` - parameters `CopyFoldersOnly` and `CopyTopFoldersOnly` to copy only folders without files (recursively or only the selected folders)
 - `cm_Delete` - parameter `SkipErrors` to prevent error dialog when deleting files
 - `cm_MarkCurrentExtension` - works with folders
+- `cm_FlatView` - parameter `FoldersOnly` to flatten only folders
 
 ### Other
 - added info to the operations dialogs, with the format "Current: [processed_file_size/total_file_size] :: Total: [all_processed_size/all_total_size]"
@@ -38,12 +39,18 @@ A custom build of the file manager [**Double Commander**](https://github.com/dou
 - quick search/filter is resetting the default options when the search form is shown
 - delete dialog for WFX plugins (like FTP, ADB) is not blocking the UI during the operation
 - quick search allows to ignore some characters at the beginning, such as "\_-."
+- internal viewer uses "code" view by default for any file type (allows to select text with keyboard)
 
 ---
 
 ## Download
 
 ### [Original Releases](https://github.com/doublecmd/doublecmd/releases)
+
+### [ 1.2.1 ]
+#### 1.2.1 - Rebuild 2
+- [x64](https://github.com/mortalis13/DoubleCommander-Rebuild/releases/download/1.2.1-RB2/doublecmd-1.2.1-RB2-rebuild-x64.zip) **(14.5 MB)**
+- [x32](https://github.com/mortalis13/DoubleCommander-Rebuild/releases/download/1.2.1-RB2/doublecmd-1.2.1-RB2-rebuild-x32.zip) **(13.8 MB)**
 
 ### [ 1.2.1 ]
 #### 1.2.1 - Rebuild 1
@@ -99,6 +106,14 @@ A custom build of the file manager [**Double Commander**](https://github.com/dou
 ---
 
 ## Changelog
+
+### 1.2.1 - Rebuild 2
+- non-blocking delete dialog for WFX plugins
+- allow quick search skipping initial special chars
+- param for cm_FlatView to show only folders
+- maximized state for options, viewer, editor, find, multirename forms
+- fixed go-to-parent on root when changed from other source
+- use code view by default in viewer
 
 ### 1.2.1 - Rebuild 1
 - adaptation for dev version 2025 (next items rename with arrows)

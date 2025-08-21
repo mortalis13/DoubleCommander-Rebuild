@@ -1,8 +1,8 @@
 object frmViewer: TfrmViewer
-  Left = 930
-  Height = 366
-  Top = 427
-  Width = 521
+  Left = 0
+  Height = 1080
+  Top = 0
+  Width = 1920
   WindowState = wsMaximized
   HorzScrollBar.Page = 951
   VertScrollBar.Page = 491
@@ -296,6 +296,7 @@ object frmViewer: TfrmViewer
     end
   end
   object Status: TKASStatusBar
+    Visible = False
     Left = 0
     Height = 23
     Top = 343
@@ -1242,6 +1243,78 @@ object frmViewer: TfrmViewer
       ColWidths = (
         170
       )
+    end
+  end
+  object StatusPanel: TDarkPanel
+    Left = 0
+    Height = 23
+    Top = 754
+    Width = 1400
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 7
+    object lblStatusPanel0: TLabel
+      Left = 4
+      Height = 23
+      Top = 4
+      Width = 30
+      Alignment = taRightJustify
+      AutoSize = True
+      Caption = ''
+      Color = clBlack
+      Font.Color = clWhite
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblStatusPanel1: TLabel
+      Left = 64
+      Height = 23
+      Top = 4
+      Width = 40
+      Alignment = taRightJustify
+      AutoSize = True
+      Caption = ''
+      Color = clBlack
+      Font.Color = clWhite
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblStatusPanel2: TLabel
+      Left = 134
+      Height = 23
+      Top = 4
+      Width = 80
+      Alignment = taRightJustify
+      AutoSize = True
+      Caption = ''
+      Color = clBlack
+      Font.Color = clWhite
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblStatusPanel3: TLabel
+      Left = 244
+      Height = 23
+      Top = 4
+      Width = 90
+      AutoSize = True
+      Caption = ''
+      Color = clBlack
+      Font.Color = clWhite
+      ParentColor = False
+      ParentFont = False
+    end
+    object lblStatusPanel4: TLabel
+      Left = 364
+      Height = 23
+      Top = 4
+      Width = 250
+      AutoSize = True
+      Caption = ''
+      Color = clBlack
+      Font.Color = clWhite
+      ParentColor = False
+      ParentFont = False
     end
   end
   object MainMenu: TMainMenu

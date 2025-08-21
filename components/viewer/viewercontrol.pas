@@ -44,7 +44,7 @@ unit ViewerControl;
 interface
 
 uses
-  SysUtils, Classes, Controls, StdCtrls, LCLVersion, LMessages, fgl;
+  SysUtils, Classes, Controls, StdCtrls, LCLVersion, LMessages, Messages, fgl;
 
 const
   MaxMemSize = $400000; // 4 Mb
@@ -418,6 +418,7 @@ type
   protected
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure FontChanged(Sender: TObject); override;
     procedure KeyDown(var Key: word; Shift: TShiftState); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -3941,6 +3942,13 @@ end;
 procedure TViewerControl.ResetEncoding;
 begin
   FEncoding:= veAutoDetect;
+end;
+
+procedure TViewerControl.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  // Force black background regardless of system theme
+  FillRect(Message.DC, ClientRect, CreateSolidBrush(RGB(42, 42, 42)));
+  Message.Result := 1;
 end;
 
 procedure Register;

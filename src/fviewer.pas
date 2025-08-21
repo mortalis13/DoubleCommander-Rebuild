@@ -65,6 +65,15 @@ uses
   uFileSourceCalcStatisticsOperation, KASComCtrls, LCLVersion;
 
 type
+  TDarkPanel = class(TPanel)
+  protected
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+  end;
+  
+  TDarkSynEdit = class(TSynEdit)
+  protected
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+  end;
 
   TEncodingMenu = (emViewer, emPlugin, emEditor);
 
@@ -171,6 +180,12 @@ type
     miShowCaret: TMenuItem;
     miPrintSetup: TMenuItem;
     miAutoReload: TMenuItem;
+    StatusPanel: TDarkPanel;
+    lblStatusPanel0: TLabel;
+    lblStatusPanel1: TLabel;
+    lblStatusPanel2: TLabel;
+    lblStatusPanel3: TLabel;
+    lblStatusPanel4: TLabel;
     pmiCopyFormatted: TMenuItem;
     miDec: TMenuItem;
     MenuItem2: TMenuItem;
@@ -207,7 +222,7 @@ type
     pnlText: TPanel;
     pnlCode: TPanel;
     pmStatusBar: TPopupMenu;
-    SynEdit: TSynEdit;
+    SynEdit: TDarkSynEdit;
     miDiv3: TMenuItem;
     miOffice: TMenuItem;
     miEncoding: TMenuItem;
@@ -399,6 +414,7 @@ type
     WlxPlugins: TWLXModuleList;
     FWlxModule: TWlxModule;
     ActivePlugin: Integer;
+    TimerUpdateStatusPanels: TTimer;
     //---------------------
     function GetListerRect: TRect;
     function CheckOffice(const sFileName: String): Boolean;
@@ -434,6 +450,10 @@ type
     procedure SaveImageAs (Var sExt: String; senderSave: boolean; Quality: integer);
     procedure ImagePaintBackground(ASender: TObject; ACanvas: TCanvas; ARect: TRect);
     procedure CreatePreview(FullPathToFile:string; index:integer; delete: boolean = false);
+    procedure SetStatusPanelText(PanelIndex: Integer; const AText: String);
+    procedure ClearStatusPanels;
+    procedure UpdateStatusPanelPositions;
+    procedure TimerUpdateStatusPanelsTimer(Sender: TObject);
 
     property Commands: TFormCommands read FCommands implements IFormCommands;
     property FileName: String write SetFileName;
@@ -441,6 +461,7 @@ type
   protected
     procedure WMCommand(var Message: TLMCommand); message LM_COMMAND;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CMThemeChanged(var Message: TLMessage); message CM_THEMECHANGED;
 
   public
@@ -538,7 +559,7 @@ uses
   uConvEncoding, DCBasicTypes, DCOSUtils, uOSUtils, uFindByrMr, uFileViewWithGrid,
   fPrintSetup, uFindFiles, uAdministrator, uOfficeXML, uHighlighterProcs, dmHigh,
   SynEditTypes, uFile, uFileSystemFileSource, uFileProcs, uOperationsManager,
-  uFileSourceOperationOptions
+  uFileSourceOperationOptions, uDarkStyle
 {$if lcl_fullversion >= 4990000}
   , SynEditWrappedView
 {$endif}
@@ -877,6 +898,9 @@ constructor TfrmViewer.Create(TheOwner: TComponent; aWaitData: TWaitData;
 begin
   bQuickView:= aQuickView;
   inherited Create(TheOwner);
+  
+  AllowDarkModeForWindow(Handle, False);
+  
   FWaitData := aWaitData;
   FLastSearchPos := -1;
   FZoomFactor := 100;
@@ -936,10 +960,7 @@ begin
   FLastSearchPos := -1;
   Caption := ReplaceHome(aFileName);
   ViewerControl.FileName := EmptyStr;
-
-  // Clear text on status bar.
-  for i := 0 to Status.Panels.Count - 1 do
-    Status.Panels[i].Text := '';
+  ClearStatusPanels;
 
   dwFileAttributes := mbFileGetAttr(aFileName);
 
@@ -1005,6 +1026,9 @@ begin
     end;
 
     FileName:= aFileName;
+    
+    ViewerPositionChanged(Self);
+    TimerUpdateStatusPanels.Enabled := True;  // delayed update of status panel dynamic widths
   finally
     Screen.EndWaitCursor;
   end;
@@ -1017,7 +1041,7 @@ begin
     begin
       if (FWlxModule.CallListLoadNext(Self.Handle, FileList[Index], PluginShowFlags) <> LISTPLUGIN_ERROR) then
       begin
-        Status.Panels[sbpFileNr].Text:= Format('%d/%d', [Index + 1, FileList.Count]);
+        SetStatusPanelText(sbpFileNr, Format('%d/%d', [Index + 1, FileList.Count]));
         FileName:= FileList[Index];
         Caption:= ReplaceHome(FFileName);
         iActiveFile := Index;
@@ -1065,7 +1089,7 @@ begin
 
   btnPaint.Down:= False;
   btnHightlight.Down:= False;
-  Status.Panels[sbpFileNr].Text:= Format('%d/%d', [iIndex + 1, FileList.Count]);
+  SetStatusPanelText(sbpFileNr, Format('%d/%d', [iIndex + 1, FileList.Count]));
 
   if ANewFile then begin
     if ViewerControl.IsFileOpen then
@@ -1289,7 +1313,7 @@ begin
                 DrawFocusRect(Rect(UndoSX+10,UndoSY+10,UndoEX-10,UndoEY-10));
                 DrawFocusRect(Rect(StartX,StartY,EndX,EndY));
                 DrawFocusRect(Rect(StartX+10,StartY+10,EndX-10,EndY-10));//Pen.Mode := pmNotXor;
-                Status.Panels[sbpImageSelection].Text := IntToStr(EndX-StartX)+'x'+IntToStr(EndY-StartY);
+                SetStatusPanelText(sbpImageSelection, IntToStr(EndX-StartX)+'x'+IntToStr(EndY-StartY));
                 UndoSX:=StartX;
                 UndoSY:=StartY;
                 UndoEX:=EndX;
@@ -1357,7 +1381,7 @@ begin
         Pen.Color := clHighlight;
         DrawFocusRect(Rect(StartX,StartY,EndX,EndY));
         DrawFocusRect(Rect(StartX+10,StartY+10,EndX-10,EndY-10));
-        Status.Panels[sbpImageSelection].Text := IntToStr(EndX-StartX)+'x'+IntToStr(EndY-StartY);
+        SetStatusPanelText(sbpImageSelection, IntToStr(EndX-StartX)+'x'+IntToStr(EndY-StartY));
       end;
     end;
     end;
@@ -1465,7 +1489,7 @@ begin
         end;
         miEncoding.Items[Index].Checked:= True;
         ViewerControl.Encoding:= TViewerEncoding(Index);
-        Status.Panels[sbpTextEncoding].Text := rsViewEncoding + ': ' + ViewerControl.EncodingName;
+        SetStatusPanelText(sbpTextEncoding, rsViewEncoding + ': ' + ViewerControl.EncodingName);
       end;
     end;
   end;
@@ -1633,9 +1657,9 @@ end;
 procedure TfrmViewer.SetFileName(const AValue: String);
 begin
   if actAutoReload.Checked then
-    Status.Panels[sbpFileName].Text:= '* ' + AValue
+    SetStatusPanelText(sbpFileName, '* ' + AValue)
   else begin
-    Status.Panels[sbpFileName].Text:= AValue;
+    SetStatusPanelText(sbpFileName, AValue);
   end;
   if FFileName <> AValue then
   begin
@@ -2331,6 +2355,11 @@ var
   HMViewer: THMForm;
   MenuItem: TMenuItem;
 begin
+  TimerUpdateStatusPanels := TTimer.Create(Self);
+  TimerUpdateStatusPanels.Enabled := False;
+  TimerUpdateStatusPanels.Interval := 1;
+  TimerUpdateStatusPanels.OnTimer := @TimerUpdateStatusPanelsTimer;
+  
   if bQuickView then
   begin
     miDiv4.Visible:= False;
@@ -2394,11 +2423,10 @@ begin
   DrawPreview.DefaultColWidth := FThumbSize.cx + 4;
   DrawPreview.DefaultRowHeight := FThumbSize.cy + DrawPreview.Canvas.TextHeight('Pp') + 6;
 
-  MakeTextEncodingsMenu;
-
-  Status.Panels[sbpFileNr].Alignment := taRightJustify;
-  Status.Panels[sbpPosition].Alignment := taRightJustify;
-  Status.Panels[sbpFileSize].Alignment := taRightJustify;
+  MakeTextEncodingsMenu;  // Set alignment for status panels (handled by label alignment properties)
+  lblStatusPanel0.Alignment := taRightJustify;
+  lblStatusPanel1.Alignment := taRightJustify;
+  lblStatusPanel2.Alignment := taRightJustify;
 
   ViewerPositionChanged(Self);
 
@@ -2733,7 +2761,7 @@ end;
 procedure TfrmViewer.SynEditStatusChange(Sender: TObject;
   Changes: TSynStatusChanges);
 begin
-  Status.Panels[sbpPosition].Text:= Format('%d:%d', [SynEdit.CaretX, SynEdit.CaretY]);
+  SetStatusPanelText(sbpPosition, Format('%d:%d', [SynEdit.CaretX, SynEdit.CaretY]));
 end;
 
 procedure TfrmViewer.SynEditKeyDown(Sender: TObject; var Key: Word;
@@ -2860,8 +2888,8 @@ begin
   end;
 
   // Update status bar
-  Status.Panels[sbpCurrentResolution].Text:= Format(fmtImageInfo, [iWidth,iHeight,  100.0 * dScaleFactor]);
-  Status.Panels[sbpFullResolution].Text:= Format(fmtImageInfo, [Image.Picture.Width,Image.Picture.Height, 100.0]);
+  SetStatusPanelText(sbpCurrentResolution, Format(fmtImageInfo, [iWidth,iHeight,  100.0 * dScaleFactor]));
+  SetStatusPanelText(sbpFullResolution, Format(fmtImageInfo, [Image.Picture.Width,Image.Picture.Height, 100.0]));
 end;
 
 function TfrmViewer.GetListerRect: TRect;
@@ -3052,7 +3080,7 @@ var
 begin
   if (SynEdit = nil) then
   begin
-    SynEdit:= TSynEdit.Create(pnlCode);
+    SynEdit:= TDarkSynEdit.Create(pnlCode);
     SynEdit.Parent:= pnlCode;
     SynEdit.Align:= alClient;
     SynEdit.ReadOnly:= True;
@@ -3093,7 +3121,7 @@ begin
         Reader.Free;
       end;
 
-      Status.Panels[sbpTextEncoding].Text:= EmptyStr;
+      SetStatusPanelText(sbpTextEncoding, EmptyStr);
       // Try to detect encoding by first 4 kb of text
       Buffer := Copy(FSynEditOriginalText, 1, 4096);
       sEncoding := NormalizeEncoding(DetectEncoding(Buffer));
@@ -3103,7 +3131,7 @@ begin
         if SameStr(miEncoding.Items[Index].Hint, sEncoding) then
         begin
           miEncoding.Items[Index].Checked:= True;
-          Status.Panels[sbpTextEncoding].Text := rsViewEncoding + ': ' + miEncoding.Items[Index].Caption;
+          SetStatusPanelText(sbpTextEncoding, rsViewEncoding + ': ' + miEncoding.Items[Index].Caption);
           Break;
         end;
       end;
@@ -3509,12 +3537,12 @@ procedure TfrmViewer.ViewerPositionChanged(Sender:TObject);
 begin
   if ViewerControl.FileSize > 0 then
     begin
-      Status.Panels[sbpPosition].Text :=
+      SetStatusPanelText(sbpPosition,
           cnvFormatFileSize(ViewerControl.Position) +
-          ' (' + IntToStr(ViewerControl.Percent) + ' %)';
+          ' (' + IntToStr(ViewerControl.Percent) + ' %)');
     end
   else
-    Status.Panels[sbpPosition].Text:= cnvFormatFileSize(0) + ' (0 %)';
+    SetStatusPanelText(sbpPosition, cnvFormatFileSize(0) + ' (0 %)');
 end;
 
 procedure TfrmViewer.ActivatePanel(Panel: TPanel);
@@ -3532,11 +3560,11 @@ begin
 
   if Panel = nil then
   begin
-    Status.Panels[sbpFileSize].Text:= EmptyStr;
-    Status.Panels[sbpPluginName].Text:= FWlxModule.Name;
+    SetStatusPanelText(sbpFileSize, EmptyStr);
+    SetStatusPanelText(sbpPluginName, FWlxModule.Name);
 
     UpdateTextEncodingsMenu(emPlugin);
-    Status.Panels[sbpTextEncoding].Text := rsViewEncoding + ': ' + ViewerControl.EncodingName;
+    SetStatusPanelText(sbpTextEncoding, rsViewEncoding + ': ' + ViewerControl.EncodingName);
   end
   else if Panel = pnlCode then
   begin
@@ -3546,7 +3574,7 @@ begin
     if (not bQuickView) and CanFocus and SynEdit.CanFocus then
        SynEdit.SetFocus;
 
-    Status.Panels[sbpFileSize].Text:= IntToStr(SynEdit.Lines.Count);
+    SetStatusPanelText(sbpFileSize, IntToStr(SynEdit.Lines.Count));
   end
   else if Panel = pnlText then
   begin
@@ -3564,13 +3592,13 @@ begin
 
     UpdateTextEncodingsMenu(emViewer);
     FRegExp.ChangeEncoding(ViewerControl.EncodingName);
-    Status.Panels[sbpFileSize].Text:= cnvFormatFileSize(ViewerControl.FileSize) + ' (100 %)';
-    Status.Panels[sbpTextEncoding].Text := rsViewEncoding + ': ' + ViewerControl.EncodingName;
+    SetStatusPanelText(sbpFileSize, cnvFormatFileSize(ViewerControl.FileSize) + ' (100 %)');
+    SetStatusPanelText(sbpTextEncoding, rsViewEncoding + ': ' + ViewerControl.EncodingName);
   end
   else if Panel = pnlImage then
   begin
     pnlImage.TabStop:= True;
-    Status.Panels[sbpTextEncoding].Text:= EmptyStr;
+    SetStatusPanelText(sbpTextEncoding, EmptyStr);
     if (not bQuickView) and CanFocus and pnlImage.CanFocus then pnlImage.SetFocus;
     ToolBar1.Visible:= not (bQuickView or (miFullScreen.Checked and not ToolBar1.MouseInClient));
   end;
@@ -3922,7 +3950,7 @@ begin
       if miDefault.Checked then
       begin
         SynEdit.Lines.Text:= ConvertEncoding(FSynEditOriginalText, Encoding, EncodingUTF8);
-        Status.Panels[sbpTextEncoding].Text := rsViewEncoding + ': ' + MenuItem.Caption;
+        SetStatusPanelText(sbpTextEncoding, rsViewEncoding + ': ' + MenuItem.Caption);
       end
       else begin
         if bPlugin then
@@ -3938,7 +3966,7 @@ begin
         end;
         FRegExp.ChangeEncoding(Encoding);
         ViewerControl.EncodingName := Encoding;
-        Status.Panels[sbpTextEncoding].Text := rsViewEncoding + ': ' + ViewerControl.EncodingName;
+        SetStatusPanelText(sbpTextEncoding, rsViewEncoding + ': ' + ViewerControl.EncodingName);
       end;
     end;
   end;
@@ -4206,6 +4234,72 @@ begin
       ViewerControl.Mode:= WRAP_MODE[gViewerWrapText];
     end;
   end;
+end;
+
+procedure TfrmViewer.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  // Force black background regardless of system theme
+  FillRect(Message.DC, ClientRect, CreateSolidBrush(RGB(42, 42, 42)));
+  Message.Result := 1;
+end;
+
+procedure TDarkPanel.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  FillRect(Message.DC, ClientRect, CreateSolidBrush(RGB(42, 42, 42)));
+  Message.Result := 1;
+end;
+
+procedure TDarkSynEdit.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+  FillRect(Message.DC, ClientRect, CreateSolidBrush(RGB(42, 42, 42)));
+  Message.Result := 1;
+end;
+
+procedure TfrmViewer.SetStatusPanelText(PanelIndex: Integer; const AText: String);
+begin
+  case PanelIndex of
+    0: lblStatusPanel0.Caption := AText;
+    1: lblStatusPanel1.Caption := AText;
+    2: lblStatusPanel2.Caption := AText;
+    3: lblStatusPanel3.Caption := AText;
+    4: lblStatusPanel4.Caption := AText;
+  end;
+  UpdateStatusPanelPositions;
+end;
+
+procedure TfrmViewer.ClearStatusPanels;
+var
+  i: Integer;
+begin
+  for i := 0 to 4 do
+    SetStatusPanelText(i, '');
+end;
+
+procedure TfrmViewer.UpdateStatusPanelPositions;
+const
+  Gap = 30;
+var
+  i: Integer;
+  PrevLabel: TLabel;
+  Labels: array[0..4] of TLabel;
+begin
+  Labels[0] := lblStatusPanel0;
+  Labels[1] := lblStatusPanel1;
+  Labels[2] := lblStatusPanel2;
+  Labels[3] := lblStatusPanel3;
+  Labels[4] := lblStatusPanel4;
+  
+  for i := 1 to 4 do
+  begin
+    PrevLabel := Labels[i-1];
+    Labels[i].Left := PrevLabel.Left + PrevLabel.Width + Gap;
+  end;
+end;
+
+procedure TfrmViewer.TimerUpdateStatusPanelsTimer(Sender: TObject);
+begin
+  TimerUpdateStatusPanels.Enabled := False;
+  UpdateStatusPanelPositions;
 end;
 
 initialization

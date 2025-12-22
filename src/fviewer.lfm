@@ -1245,7 +1245,7 @@ object frmViewer: TfrmViewer
       )
     end
   end
-  object StatusPanel: TDarkPanel
+  object StatusPanel: TTPanel
     Left = 0
     Height = 23
     Top = 754
@@ -1261,8 +1261,8 @@ object frmViewer: TfrmViewer
       Alignment = taRightJustify
       AutoSize = True
       Caption = ''
-      Color = clBlack
-      Font.Color = clWhite
+      Color = clWindow
+      Font.Color = clWindowText
       ParentColor = False
       ParentFont = False
     end
@@ -1274,8 +1274,8 @@ object frmViewer: TfrmViewer
       Alignment = taRightJustify
       AutoSize = True
       Caption = ''
-      Color = clBlack
-      Font.Color = clWhite
+      Color = clWindow
+      Font.Color = clWindowText
       ParentColor = False
       ParentFont = False
     end
@@ -1287,8 +1287,8 @@ object frmViewer: TfrmViewer
       Alignment = taRightJustify
       AutoSize = True
       Caption = ''
-      Color = clBlack
-      Font.Color = clWhite
+      Color = clWindow
+      Font.Color = clWindowText
       ParentColor = False
       ParentFont = False
     end
@@ -1299,8 +1299,8 @@ object frmViewer: TfrmViewer
       Width = 90
       AutoSize = True
       Caption = ''
-      Color = clBlack
-      Font.Color = clWhite
+      Color = clWindow
+      Font.Color = clWindowText
       ParentColor = False
       ParentFont = False
     end
@@ -1311,8 +1311,8 @@ object frmViewer: TfrmViewer
       Width = 250
       AutoSize = True
       Caption = ''
-      Color = clBlack
-      Font.Color = clWhite
+      Color = clWindow
+      Font.Color = clWindowText
       ParentColor = False
       ParentFont = False
     end

@@ -65,12 +65,12 @@ uses
   uFileSourceCalcStatisticsOperation, KASComCtrls, LCLVersion;
 
 type
-  TDarkPanel = class(TPanel)
+  TTPanel = class(TPanel)
   protected
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   end;
   
-  TDarkSynEdit = class(TSynEdit)
+  TTSynEdit = class(TSynEdit)
   protected
     procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   end;
@@ -180,7 +180,7 @@ type
     miShowCaret: TMenuItem;
     miPrintSetup: TMenuItem;
     miAutoReload: TMenuItem;
-    StatusPanel: TDarkPanel;
+    StatusPanel: TTPanel;
     lblStatusPanel0: TLabel;
     lblStatusPanel1: TLabel;
     lblStatusPanel2: TLabel;
@@ -222,7 +222,7 @@ type
     pnlText: TPanel;
     pnlCode: TPanel;
     pmStatusBar: TPopupMenu;
-    SynEdit: TDarkSynEdit;
+    SynEdit: TTSynEdit;
     miDiv3: TMenuItem;
     miOffice: TMenuItem;
     miEncoding: TMenuItem;
@@ -3080,7 +3080,7 @@ var
 begin
   if (SynEdit = nil) then
   begin
-    SynEdit:= TDarkSynEdit.Create(pnlCode);
+    SynEdit:= TTSynEdit.Create(pnlCode);
     SynEdit.Parent:= pnlCode;
     SynEdit.Align:= alClient;
     SynEdit.ReadOnly:= True;
@@ -4238,20 +4238,19 @@ end;
 
 procedure TfrmViewer.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-  // Force black background regardless of system theme
-  FillRect(Message.DC, ClientRect, CreateSolidBrush(RGB(42, 42, 42)));
+  FillRect(Message.DC, ClientRect, CreateSolidBrush(ColorToRGB(clWindow)));
   Message.Result := 1;
 end;
 
-procedure TDarkPanel.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TTPanel.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-  FillRect(Message.DC, ClientRect, CreateSolidBrush(RGB(42, 42, 42)));
+  FillRect(Message.DC, ClientRect, CreateSolidBrush(ColorToRGB(clWindow)));
   Message.Result := 1;
 end;
 
-procedure TDarkSynEdit.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+procedure TTSynEdit.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-  FillRect(Message.DC, ClientRect, CreateSolidBrush(RGB(42, 42, 42)));
+  FillRect(Message.DC, ClientRect, CreateSolidBrush(ColorToRGB(clWindow)));
   Message.Result := 1;
 end;
 

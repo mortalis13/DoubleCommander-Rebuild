@@ -3946,8 +3946,7 @@ end;
 
 procedure TViewerControl.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
-  // Force black background regardless of system theme
-  FillRect(Message.DC, ClientRect, CreateSolidBrush(RGB(42, 42, 42)));
+  FillRect(Message.DC, ClientRect, CreateSolidBrush(ColorToRGB(clWindow)));
   Message.Result := 1;
 end;
 

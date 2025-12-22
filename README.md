@@ -38,8 +38,7 @@ A custom build of the file manager [**Double Commander**](https://github.com/dou
 - when executing go-to-parent command in a drive root (left arrow), the first item is selected (home key trigger)
 - quick search/filter is resetting the default options when the search form is shown
 - delete dialog for WFX plugins (like FTP, ADB) is not blocking the UI during the operation
-- quick search allows to ignore some characters at the beginning, such as "\_-."
-- internal viewer uses "code" view by default for any file type (allows to select text with keyboard)
+- quick search allows to ignore some characters at the beginning, such as "\_-.!#$..."
 
 ---
 
@@ -48,11 +47,14 @@ A custom build of the file manager [**Double Commander**](https://github.com/dou
 ### [Original Releases](https://github.com/doublecmd/doublecmd/releases)
 
 ### [ 1.2.1 ]
+#### 1.2.1 - Rebuild 3
+- [x64](https://github.com/mortalis13/DoubleCommander-Rebuild/releases/download/1.2.1-RB3/doublecmd-1.2.1-RB3-rebuild-x64.zip) **(14.5 MB)**
+- [x32](https://github.com/mortalis13/DoubleCommander-Rebuild/releases/download/1.2.1-RB3/doublecmd-1.2.1-RB3-rebuild-x32.zip) **(13.8 MB)**
+
 #### 1.2.1 - Rebuild 2
 - [x64](https://github.com/mortalis13/DoubleCommander-Rebuild/releases/download/1.2.1-RB2/doublecmd-1.2.1-RB2-rebuild-x64.zip) **(14.5 MB)**
 - [x32](https://github.com/mortalis13/DoubleCommander-Rebuild/releases/download/1.2.1-RB2/doublecmd-1.2.1-RB2-rebuild-x32.zip) **(13.8 MB)**
 
-### [ 1.2.1 ]
 #### 1.2.1 - Rebuild 1
 - [x64](https://github.com/mortalis13/DoubleCommander-Rebuild/releases/download/1.2.1-RB1/doublecmd-1.2.1-RB1-rebuild-x64.zip) **(14.5 MB)**
 - [x32](https://github.com/mortalis13/DoubleCommander-Rebuild/releases/download/1.2.1-RB1/doublecmd-1.2.1-RB1-rebuild-x32.zip) **(13.8 MB)**
@@ -106,6 +108,13 @@ A custom build of the file manager [**Double Commander**](https://github.com/dou
 ---
 
 ## Changelog
+
+### 1.2.1 - Rebuild 3
+- viewer background colors are adaptive for light/dark themes
+- added more skip chars for quick search
+- restored the modes naming for the viewer
+- set 1MB max size for the code viewer mode
+- code viewer mode is detected only based on the size and text type
 
 ### 1.2.1 - Rebuild 2
 - non-blocking delete dialog for WFX plugins

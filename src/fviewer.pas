@@ -117,6 +117,7 @@ type
     actCopyToClipboardFormatted: TAction;
     actChangeEncoding: TAction;
     actAutoReload: TAction;
+    actShowCode: TAction;
     actUndo: TAction;
     actShowTransparency: TAction;
     actWrapText: TAction;
@@ -142,7 +143,6 @@ type
     actShowAsWrapText: TAction;
     actShowAsHex: TAction;
     actShowAsBin: TAction;
-    actShowDefault: TAction;
     actShowAsText: TAction;
     actPreview: TAction;
     actGotoLine: TAction;
@@ -171,7 +171,7 @@ type
     GifAnim: TGifAnim;
     memFolder: TMemo;
     mnuPlugins: TMenuItem;
-    miDefault: TMenuItem;
+    miCode: TMenuItem;
     miShowTransparency: TMenuItem;
     miWrapText: TMenuItem;
     miPen: TMenuItem;
@@ -536,7 +536,7 @@ type
     procedure cm_ShowPlugins     (const Params: array of string);
 
     procedure cm_ShowOffice      (const Params: array of string);
-    procedure cm_ShowDefault        (const Params: array of string);
+    procedure cm_ShowCode        (const Params: array of string);
 
     procedure cm_ExitViewer      (const Params: array of string);
 
@@ -1016,7 +1016,7 @@ begin
       ActivatePanel(pnlText);
       miOffice.Checked:= True;
     end
-    else if LoadSynEdit(aFileName) then
+    else if CheckSynEdit(aFileName) and LoadSynEdit(aFileName) then
     begin
       ActivatePanel(pnlCode);
     end
@@ -1504,7 +1504,7 @@ procedure TfrmViewer.CMThemeChanged(var Message: TLMessage);
 var
   Highlighter: TSynCustomHighlighter;
 begin
-  if miDefault.Checked then
+  if miCode.Checked then
   begin
     Highlighter:= TSynCustomHighlighter(dmHighl.SynHighlighterHashList.Data[SynEdit.Highlighter.LanguageName]);
     if Assigned(Highlighter) then dmHighl.SetHighlighter(SynEdit, Highlighter);
@@ -2480,6 +2480,11 @@ begin
           cm_LoadPrevFile([]);
           Key := #0;
         end;
+      '1':
+        begin
+          cm_ShowAsText(['']);
+          Key := #0;
+        end;
       '2':
         begin
           cm_ShowAsBin(['']);
@@ -2508,11 +2513,6 @@ begin
       '8':
         begin
           cm_ShowOffice(['']);
-          Key := #0;
-        end;
-      '9':
-        begin
-          cm_ShowAsText(['']);
           Key := #0;
         end;
     end;
@@ -2678,7 +2678,7 @@ end;
 
 procedure TfrmViewer.ReopenAsTextIfNeeded;
 begin
-  if bImage or bAnimation or bPlugin or miPlugins.Checked or miOffice.Checked or miDefault.Checked then
+  if bImage or bAnimation or bPlugin or miPlugins.Checked or miOffice.Checked or miCode.Checked then
   begin
     Image.Picture := nil;
     ViewerControl.FileName := FileList.Strings[iActiveFile];
@@ -2916,55 +2916,18 @@ begin
 end;
 
 function TfrmViewer.CheckSynEdit(const sFileName: String; bForce: Boolean = False): Boolean;
-var
-  AFile: TFile;
-  ATemplate: TSearchTemplate;
 begin
   if bForce then
-    Result:= True
-  else if (Length(gViewerSynEditMask) = 0) then
-    Result:= False
-  else if not IsMaskSearchTemplate(gViewerSynEditMask) then
-  begin
-    Result:= MatchesMaskList(sFileName, gViewerSynEditMask);
-  end
-  else
-  try
-    ATemplate:= gSearchTemplateList.TemplateByName[gViewerSynEditMask];
-    if (ATemplate = nil) then
-      Result:= False
-    else begin
-      AFile:= TFileSystemFileSource.CreateFileFromFile(sFileName);
-      try
-        Result:= ATemplate.CheckFile(AFile);
-      finally
-        AFile.Free;
-      end;
-    end;
-  except
+    Exit(True);
+
+  if (mbFileSize(sFileName) > (gMaxCodeSize * $100000)) then  // gMaxCodeSize in MB
     Exit(False);
-  end;
 
-  if Result and not bForce then
-  begin
-    if (mbFileSize(sFileName) > (gMaxCodeSize * $100000)) then
-      Exit(False);
-  end;
-
-  if Result then
-  begin
-    FHighlighter:= GetHighlighterFromFileExt(dmHighl.SynHighlighterList, ExtractFileExt(sFileName));
-    Result:= Assigned(FHighlighter);
-  end;
-
-  if Result and not bForce then
-  begin
+  PushPop(FElevate);
+  try
+    Result:= mbFileIsText(sFileName);
+  finally
     PushPop(FElevate);
-    try
-      Result:= mbFileIsText(sFileName);
-    finally
-      PushPop(FElevate);
-    end;
   end;
 end;
 
@@ -3568,7 +3531,7 @@ begin
   end
   else if Panel = pnlCode then
   begin
-    miDefault.Checked:= True;
+    miCode.Checked:= True;
     UpdateTextEncodingsMenu(emEditor);
 
     if (not bQuickView) and CanFocus and SynEdit.CanFocus then
@@ -3947,7 +3910,7 @@ begin
     begin
       MenuItem.Checked := True;
       Encoding:= NormalizeEncoding(Params[0]);
-      if miDefault.Checked then
+      if miCode.Checked then
       begin
         SynEdit.Lines.Text:= ConvertEncoding(FSynEditOriginalText, Encoding, EncodingUTF8);
         SetStatusPanelText(sbpTextEncoding, rsViewEncoding + ': ' + MenuItem.Caption);
@@ -3974,7 +3937,7 @@ end;
 
 procedure TfrmViewer.cm_CopyToClipboard(const Params: array of string);
 begin
-  if miDefault.Checked then
+  if miCode.Checked then
     SynEdit.CopyToClipboard
   else if bPlugin then
    FWlxModule.CallListSendCommand(lc_copy, 0)
@@ -3997,7 +3960,7 @@ end;
 
 procedure TfrmViewer.cm_SelectAll(const Params: array of string);
 begin
-  if miDefault.Checked then
+  if miCode.Checked then
     SynEdit.SelectAll
   else if bPlugin then
     FWlxModule.CallListSendCommand(lc_selectall, 0)
@@ -4010,7 +3973,7 @@ procedure TfrmViewer.cm_Find(const Params: array of string);
 var
   bSearchBackwards: Boolean;
 begin
-  if miDefault.Checked then
+  if miCode.Checked then
   begin
     DoSearchCode(False, ssoBackwards in FSearchOptions.Flags);
   end
@@ -4027,7 +3990,7 @@ end;
 
 procedure TfrmViewer.cm_FindNext(const Params: array of string);
 begin
-  if miDefault.Checked then
+  if miCode.Checked then
   begin
     DoSearchCode(True, False);
   end
@@ -4039,7 +4002,7 @@ end;
 
 procedure TfrmViewer.cm_FindPrev(const Params: array of string);
 begin
-  if miDefault.Checked then
+  if miCode.Checked then
   begin
     DoSearchCode(True, True);
   end
@@ -4157,15 +4120,18 @@ begin
   end;
 end;
 
-procedure TfrmViewer.cm_ShowDefault(const Params: array of string);
+procedure TfrmViewer.cm_ShowCode(const Params: array of string);
 begin
-  ExitPluginMode;
-  ViewerControl.FileName := ''; // unload current file if any is loaded
-  if LoadSynEdit(FileList.Strings[iActiveFile]) then
-    ActivatePanel(pnlCode)
-  else begin
-    ViewerControl.FileName := FileList.Strings[iActiveFile];
-    ActivatePanel(pnlText);
+  if CheckSynEdit(FileList.Strings[iActiveFile], True) then
+  begin
+    ExitPluginMode;
+    ViewerControl.FileName := ''; // unload current file if any is loaded
+    if LoadSynEdit(FileList.Strings[iActiveFile]) then
+      ActivatePanel(pnlCode)
+    else begin
+      ViewerControl.FileName := FileList.Strings[iActiveFile];
+      ActivatePanel(pnlText);
+    end;
   end;
 end;
 
@@ -4217,7 +4183,7 @@ begin
   else if not miGraphics.Checked then
   begin
 {$if lcl_fullversion >= 4990000}
-    if miDefault.Checked then
+    if miCode.Checked then
     begin
       TopLine:= SynEdit.TopLine;
       if gViewerWrapText then

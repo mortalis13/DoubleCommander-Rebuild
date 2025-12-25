@@ -1386,8 +1386,8 @@ object frmViewer: TfrmViewer
       object miDiv4: TMenuItem
         Caption = '-'
       end
-      object miDefault: TMenuItem
-        Action = actShowDefault
+      object miText: TMenuItem
+        Action = actShowAsText
         GroupIndex = 1
         RadioItem = True
       end
@@ -1429,8 +1429,8 @@ object frmViewer: TfrmViewer
         GroupIndex = 1
         RadioItem = True
       end
-      object miText: TMenuItem
-        Action = actShowAsText
+      object miCode: TMenuItem
+        Action = actShowCode
         GroupIndex = 1
         RadioItem = True
       end
@@ -1635,9 +1635,9 @@ object frmViewer: TfrmViewer
       Caption = 'Preview'
       OnExecute = actExecute
     end
-    object actShowDefault: TAction
+    object actShowAsText: TAction
       Category = 'View'
-      Caption = 'Default'
+      Caption = 'Show as &Text'
       GroupIndex = 1
       OnExecute = actExecute
     end
@@ -1835,9 +1835,9 @@ object frmViewer: TfrmViewer
       ImageIndex = 20
       OnExecute = actExecute
     end
-    object actShowAsText: TAction
+    object actShowCode: TAction
       Category = 'View'
-      Caption = 'Plain &Text'
+      Caption = 'Code'
       GroupIndex = 1
       OnExecute = actExecute
     end

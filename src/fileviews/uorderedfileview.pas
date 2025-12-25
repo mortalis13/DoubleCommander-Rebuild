@@ -626,7 +626,7 @@ var
   AOptions: TMaskOptions = [moPinyin];
 
 const
-  SkipLeadingChars: set of char = ['_', '-', '.'];
+  SkipLeadingChars: set of char = ['!', '#', '$', '%', '&', '(', ')', '+', ',', '-', '.', ';', '=', '`', '@', '[', ']', '~', '^', '_', '{', '}'];
 
   function NextIndexWrap(Index: PtrInt): PtrInt;
   begin

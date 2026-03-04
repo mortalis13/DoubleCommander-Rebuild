@@ -110,7 +110,6 @@ inherited frmOptionsHotkeys: TfrmOptionsHotkeys
     OnCompareCells = stgCommandsCompareCells
     OnDblClick = stgCommandsDblClick
     OnHeaderClick = stgCommandsHeaderClick
-    OnPrepareCanvas = stgCommandsPrepareCanvas
     OnResize = stgCommandsResize
     OnSelectCell = stgCommandsSelectCell
     ColWidths = (

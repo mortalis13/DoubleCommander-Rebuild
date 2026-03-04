@@ -88,7 +88,6 @@ type
     procedure lbSCFilesListChange(Sender: TObject);
     procedure lbxCategoriesChange(Sender: TObject);
     procedure stgCommandsDblClick(Sender: TObject);
-    procedure stgCommandsPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
     procedure stgCommandsResize(Sender: TObject);
     procedure stgCommandsSelectCell(Sender: TObject; {%H-}aCol, aRow: integer; var {%H-}CanSelect: boolean);
     procedure stgHotkeysDblClick(Sender: TObject);
@@ -296,23 +295,6 @@ procedure TfrmOptionsHotkeys.stgCommandsDblClick(Sender: TObject);
 begin
   // add hot key
   ShowEditHotkeyForm(False, GetSelectedForm, GetSelectedCommand, nil, nil);
-end;
-
-procedure TfrmOptionsHotkeys.stgCommandsPrepareCanvas(Sender: TObject; aCol, aRow: Integer; aState: TGridDrawState);
-begin
-  if (aCol = stgCmdHotkeysIndex) and (aRow > 0) then
-  begin
-    with Sender as TStringGrid do
-    begin
-      if Cells[aCol, aRow] <> '' then
-      begin
-        if not (gdSelected in aState) then
-        begin
-          Canvas.Font.Color := clRed;
-        end
-      end;
-    end;
-  end;
 end;
 
 { TfrmOptionsHotkeys.stgCommandsResize }

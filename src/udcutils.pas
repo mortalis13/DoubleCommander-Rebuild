@@ -245,11 +245,14 @@ function GetTextRange(Strings: TStrings; Start, Finish: Integer): String;
 function DCGetNewGUID: TGUID;
 procedure DCPlaceCursorNearControlIfNecessary(AControl: TControl);
 
+function ExtractHostFromUNCPath(const UNCPath: string): string;
+function IsHostReachable(const AHost: string; TimeoutMs: Integer = 1000): Boolean;
+
 implementation
 
 uses
   uLng, LCLProc, LCLType, uMasks, FileUtil, StrUtils, uOSUtils, uGlobs, uGlobsPaths,
-  DCStrUtils, DCOSUtils, DCConvertEncoding, LazUTF8
+  DCStrUtils, DCOSUtils, DCConvertEncoding, LazUTF8, Process
 {$IF DEFINED(MSWINDOWS)}
   , Windows
 {$ENDIF}
@@ -1381,6 +1384,53 @@ begin
   ptControlCenter := AControl.ClientToScreen(Classes.Point(AControl.Width div 2, AControl.Height div 2));
   if (abs(Mouse.CursorPos.x - ptControlCenter.x) > (AControl.Width div 2)) or  (abs(Mouse.CursorPos.y - ptControlCenter.y) > (AControl.Height div 2)) then
     Mouse.CursorPos := Classes.Point((ptControlCenter.x + (AControl.width div 2)) - 10, ptControlCenter.y);
+end;
+
+function ExtractHostFromUNCPath(const UNCPath: string): string;
+var
+  pStart, pEnd, pColon: Integer;
+begin
+  Result := '';
+  // Skip leading slashes
+  pStart := 1;
+  while (pStart <= Length(UNCPath)) and (UNCPath[pStart] = '\') do
+    Inc(pStart);
+
+  // Find next slash (end of host+port)
+  pEnd := Pos('\', UNCPath, pStart);
+  if pEnd = 0 then pEnd := Length(UNCPath) + 1;
+
+  // Isolate host+port substring
+  Result := Copy(UNCPath, pStart, pEnd - pStart);
+
+  // Remove port if present (anything after :)
+  pColon := Pos(':', Result);
+  if pColon > 0 then
+    Result := Copy(Result, 1, pColon - 1);
+end;
+
+function IsHostReachable(const AHost: string; TimeoutMs: Integer = 1000): Boolean;
+var
+  Proc: TProcess;
+  ExitCode: Integer;
+  Cmd: String;
+begin
+  Result := False;
+  Proc := TProcess.Create(nil);
+  try
+    {$IFDEF WINDOWS}
+      Cmd := Format('ping -n 1 -w %d %s', [TimeoutMs, AHost]);
+    {$ELSE}
+      Cmd := Format('ping -c 1 -W %d %s', [TimeoutMs div 1000, AHost]);
+    {$ENDIF}
+    Proc.CommandLine := Cmd;
+    Proc.Options := [poNoConsole, poWaitOnExit];
+    Proc.Execute;
+    ExitCode := Proc.ExitStatus;
+    Result := ExitCode = 0;
+  finally
+    Proc.Free;
+  end;
 end;
 
 end.

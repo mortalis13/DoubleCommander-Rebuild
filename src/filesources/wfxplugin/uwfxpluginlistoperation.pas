@@ -34,7 +34,7 @@ implementation
 
 uses
   DCFileAttributes, DCStrUtils, uFile, uFileSourceOperation, WfxPlugin,
-  uWfxModule, uLog, uLng;
+  uWfxModule, uLog, uLng, uDCUtils;
 
 function TWfxPluginListOperation.UpdateProgress(SourceName, TargetName: PAnsiChar;
                                                 PercentDone: Integer): Integer;
@@ -82,7 +82,11 @@ var
   Handle: THandle;
   FindData : TWfxFindData;
   HaveUpDir: Boolean = False;
+  Host: String;
 begin
+  Host := ExtractHostFromUNCPath(Path);
+  if (Host <> '') and not IsHostReachable(Host) then Exit;
+  
   with FWfxPluginFileSource.WFXModule do
   try
     FFiles.Clear;

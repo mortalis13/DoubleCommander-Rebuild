@@ -82,10 +82,10 @@ var
   Handle: THandle;
   FindData : TWfxFindData;
   HaveUpDir: Boolean = False;
-  Host: String;
+  IP: String;
 begin
-  Host := ExtractHostFromUNCPath(Path);
-  if (Host <> '') and not IsHostReachable(Host) then Exit;
+  IP := ExtractIPFromUNCPath(Path);
+  if (IP <> '') and not IsHostReachable(IP) then Exit;
   
   with FWfxPluginFileSource.WFXModule do
   try

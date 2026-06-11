@@ -245,7 +245,7 @@ function GetTextRange(Strings: TStrings; Start, Finish: Integer): String;
 function DCGetNewGUID: TGUID;
 procedure DCPlaceCursorNearControlIfNecessary(AControl: TControl);
 
-function ExtractHostFromUNCPath(const UNCPath: string): string;
+function ExtractIPFromUNCPath(const UNCPath: string): string;
 function IsHostReachable(const AHost: string; TimeoutMs: Integer = 1000): Boolean;
 
 implementation
@@ -1386,9 +1386,11 @@ begin
     Mouse.CursorPos := Classes.Point((ptControlCenter.x + (AControl.width div 2)) - 10, ptControlCenter.y);
 end;
 
-function ExtractHostFromUNCPath(const UNCPath: string): string;
+function ExtractIPFromUNCPath(const UNCPath: string): string;
 var
   pStart, pEnd, pColon: Integer;
+  Parts: TStringArray;
+  I, N: Integer;
 begin
   Result := '';
   // Skip leading slashes
@@ -1407,6 +1409,18 @@ begin
   pColon := Pos(':', Result);
   if pColon > 0 then
     Result := Copy(Result, 1, pColon - 1);
+  
+  // Detect IP
+  Parts := Result.Split(['.']);
+  if Length(Parts) <> 4 then
+    Result := ''
+  else
+    for I := 0 to 3 do
+      if not TryStrToInt(Parts[I], N) or (N < 0) or (N > 255) then
+      begin
+        Result := '';
+        break;
+      end;
 end;
 
 function IsHostReachable(const AHost: string; TimeoutMs: Integer = 1000): Boolean;
